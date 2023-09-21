@@ -1,4 +1,4 @@
-package ru.skypro.homework.filter;
+package ru.skypro.courseWork.filter;
 
 
 import org.springframework.stereotype.Component;

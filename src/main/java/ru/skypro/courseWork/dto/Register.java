@@ -1,4 +1,4 @@
-package ru.skypro.homework.dto;
+package ru.skypro.courseWork.dto;
 
 import lombok.Data;
 
