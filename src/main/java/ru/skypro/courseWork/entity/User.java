@@ -1,6 +1,7 @@
 package ru.skypro.courseWork.entity;
 
 import lombok.Data;
+import ru.skypro.courseWork.dto.Role;
 
 @Data
 public class User {
@@ -15,7 +16,7 @@ public class User {
 
     private String phone;
 
-    private String role;
+    private Role role;
 
     private String image;
 }

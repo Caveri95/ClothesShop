@@ -35,7 +35,7 @@ public class AdController {
                     @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = AdDto.class)))}),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<AdDto> createAd(@RequestBody CreateOrUpdateAdDto properties, @RequestParam MultipartFile image) {
+    public ResponseEntity<AdDto> createAd(@RequestParam CreateOrUpdateAdDto properties, @RequestParam MultipartFile image) {
         return ResponseEntity.ok(new AdDto());
     }
 

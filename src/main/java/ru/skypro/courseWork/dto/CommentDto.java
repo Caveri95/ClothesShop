@@ -11,7 +11,7 @@ public class CommentDto {
 
     private String authorFirstName;
 
-    private Integer createAt;
+    private Long createAt;
 
     private Integer pk;
 
