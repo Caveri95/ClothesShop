@@ -1,4 +1,4 @@
-package ru.skypro.homework;
+package ru.skypro.courseWork;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
