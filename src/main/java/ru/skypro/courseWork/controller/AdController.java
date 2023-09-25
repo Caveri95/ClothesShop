@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.courseWork.dto.*;
 
+import javax.validation.Valid;
+
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
@@ -35,7 +37,7 @@ public class AdController {
                     @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = AdDto.class)))}),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<AdDto> createAd(@RequestParam CreateOrUpdateAdDto properties, @RequestParam MultipartFile image) {
+    public ResponseEntity<AdDto> createAd(@RequestParam @Valid CreateOrUpdateAdDto properties, @RequestParam MultipartFile image) {
         return ResponseEntity.ok(new AdDto());
     }
 
@@ -64,13 +66,13 @@ public class AdController {
     @PatchMapping("/{id}")
     @Operation(summary = "Обновление информации об объявлении", responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = {
-                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = CreateOrUpdateAdDto.class)))}),
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = AdDto.class)))}),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Not found")
     })
-    public ResponseEntity<CreateOrUpdateAdDto> getAdInfo(@PathVariable("id") Integer id, @RequestBody CreateOrUpdateAdDto createOrUpdateAdDto) {
-        return ResponseEntity.ok(new CreateOrUpdateAdDto());
+    public ResponseEntity<AdDto> getAdInfo(@PathVariable("id") Integer id, @RequestBody @Valid CreateOrUpdateAdDto createOrUpdateAdDto) {
+        return ResponseEntity.ok(new AdDto());
     }
 
     @GetMapping("/me")

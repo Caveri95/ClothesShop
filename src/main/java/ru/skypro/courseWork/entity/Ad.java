@@ -22,5 +22,7 @@ public class Ad {
 
     private Integer price;
 
+    private String description;
+
     private String title;
 }

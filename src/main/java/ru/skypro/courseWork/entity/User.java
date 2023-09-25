@@ -4,6 +4,8 @@ import lombok.Data;
 import ru.skypro.courseWork.dto.Role;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
@@ -14,7 +16,6 @@ public class User {
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
 
     private String email;
 

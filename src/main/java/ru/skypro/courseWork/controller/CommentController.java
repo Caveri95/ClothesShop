@@ -13,6 +13,8 @@ import ru.skypro.courseWork.dto.CommentDto;
 import ru.skypro.courseWork.dto.CommentsDto;
 import ru.skypro.courseWork.dto.CreateOrUpdateCommentDto;
 
+import javax.validation.Valid;
+
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
@@ -39,7 +41,7 @@ public class CommentController {
             @ApiResponse(responseCode = "404", description = "Not found")
     })
     public ResponseEntity<CommentDto> createCommentAd(@PathVariable("id") Integer id,
-                                                      @RequestBody CreateOrUpdateCommentDto createOrUpdateCommentDto) {
+                                                      @RequestBody @Valid CreateOrUpdateCommentDto createOrUpdateCommentDto) {
         return ResponseEntity.ok(new CommentDto());
     }
 
@@ -65,7 +67,7 @@ public class CommentController {
     })
     public ResponseEntity<Void> updateCommentByIdAd(@PathVariable("adId") Integer id,
                                                     @PathVariable("commentId") Integer commentId,
-                                                    @RequestBody CreateOrUpdateCommentDto createOrUpdateCommentDto) {
+                                                    @RequestBody @Valid CreateOrUpdateCommentDto createOrUpdateCommentDto) {
         return ResponseEntity.ok().build();
     }
 }

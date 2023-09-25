@@ -19,4 +19,6 @@ public class Image {
     private String filePath;
 
     private Long fileSize;
+
+    private String mediaType;
 }
