@@ -20,6 +20,6 @@ public interface UserMapper {
 
     @Named("imageToPathString")
     default String imageToPathString(Image image) {
-        return image.getFilePath();
+        return "/users/image/" + image.getId();
     }
 }

@@ -32,7 +32,7 @@ public interface AdMapper {
 
     @Named("imageToPathString")
     default String imageToPathString(Image image) {
-        return image.getFilePath();
+        return "/ads/image/" + image.getId();
     }
 
     @Named("authorToInt")

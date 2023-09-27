@@ -20,9 +20,12 @@ public class Comment {
     @JoinColumn(name = "image_id")
     private Image authorImage;
 
+    @Column(nullable = false)
     private String authorFirstName;
 
+    @Column(nullable = false)
     private Long createAt;
 
+    @Column(nullable = false)
     private String text;
 }

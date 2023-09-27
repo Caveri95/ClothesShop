@@ -20,9 +20,12 @@ public class Ad {
     @JoinColumn(name = "image_id")
     private Image image;
 
+    @Column(nullable = false)
     private Integer price;
 
+    @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
     private String title;
 }
