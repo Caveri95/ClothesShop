@@ -14,9 +14,6 @@ public class Image {
     private Integer id;
 
     @Lob
+    @Column(nullable = false)
     private byte[] data;
-
-    private String filePath;
-
-    private Long fileSize;
 }

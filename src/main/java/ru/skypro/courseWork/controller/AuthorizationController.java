@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.skypro.courseWork.dto.Login;
 import ru.skypro.courseWork.service.AuthService;
 
+import javax.validation.Valid;
+
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
@@ -28,7 +30,7 @@ public class AuthorizationController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<Void> login(@RequestBody Login login) {
+    public ResponseEntity<Void> login(@RequestBody @Valid Login login) {
         if (authService.login(login.getUsername(), login.getPassword())) {
             return ResponseEntity.ok().build();
         } else {
