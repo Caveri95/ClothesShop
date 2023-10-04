@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.courseWork.dto.NewPasswordDto;
 import ru.skypro.courseWork.dto.UpdateUserDto;
 import ru.skypro.courseWork.dto.UserDto;
+import ru.skypro.courseWork.mapper.UserMapper;
+import ru.skypro.courseWork.service.UserService;
 
 import javax.validation.Valid;
 
@@ -24,6 +26,9 @@ import javax.validation.Valid;
 @Tag(name = "Пользователи")
 public class UserController {
 
+    private final UserService userService;
+    private final UserMapper userMapper;
+
     @PostMapping("/set_password")
     @Operation(summary = "Обновление пароля", responses = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -31,6 +36,7 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Forbidden")
     })
     public ResponseEntity<Void> updatePassword(@RequestBody @Valid NewPasswordDto newPasswordDto) {
+        //Метод для обновления пароля
         return ResponseEntity.ok().build();
     }
 
@@ -41,8 +47,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     public ResponseEntity<UserDto> getUser() {
-
-        return ResponseEntity.ok(new UserDto());
+        return ResponseEntity.ok(userMapper.toUserDto(userService.getMyInfo()));
     }
 
     @PatchMapping("/me")
@@ -52,6 +57,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     public ResponseEntity<UpdateUserDto> updateUser(@RequestBody @Valid UpdateUserDto updateUserDto) {
+        //Метод для обновления пользователя
         return ResponseEntity.ok(new UpdateUserDto());
     }
 
@@ -61,6 +67,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     public ResponseEntity<Void> updateUserAvatar(@RequestParam MultipartFile image) {
+        //Метод для обновления аватара
         return ResponseEntity.ok().build();
     }
 

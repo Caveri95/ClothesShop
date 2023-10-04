@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
+import ru.skypro.courseWork.dto.UpdateUserDto;
 import ru.skypro.courseWork.dto.UserDto;
 import ru.skypro.courseWork.entity.Image;
 import ru.skypro.courseWork.entity.User;
@@ -17,6 +18,8 @@ public interface UserMapper {
 
     @Mapping(target = "image", source = "image", ignore = true)
     User toUserEntity(UserDto userDto);
+
+    UpdateUserDto toUpdateUserDto(UserDto userDto);
 
     @Named("imageToPathString")
     default String imageToPathString(Image image) {
