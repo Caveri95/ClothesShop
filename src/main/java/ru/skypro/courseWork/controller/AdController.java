@@ -49,7 +49,8 @@ public class AdController {
                     @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = AdDto.class)))}),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<AdDto> createAd(@RequestParam @Valid CreateOrUpdateAdDto properties, @RequestParam MultipartFile image) throws IOException {
+    public ResponseEntity<AdDto> createAd(@RequestParam @Valid CreateOrUpdateAdDto properties,
+                                          @RequestParam MultipartFile image) throws IOException {
         return ResponseEntity.ok(adMapper.toAdDto(adService.createAd(properties, image)));
     }
 

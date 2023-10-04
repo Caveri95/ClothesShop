@@ -12,8 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import ru.skypro.courseWork.dto.CommentDto;
 import ru.skypro.courseWork.dto.CommentsDto;
 import ru.skypro.courseWork.dto.CreateOrUpdateCommentDto;
+import ru.skypro.courseWork.entity.Comment;
+import ru.skypro.courseWork.mapper.CommentMapper;
+import ru.skypro.courseWork.service.CommentService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
@@ -21,6 +25,9 @@ import javax.validation.Valid;
 @RequestMapping("/ads")
 @Tag(name = "Комментарии")
 public class CommentController {
+
+    private final CommentService commentService;
+    private final CommentMapper commentMapper;
 
     @GetMapping("/{id}/comments")
     @Operation(summary = "Получение комментариев объявления", responses = {
@@ -30,7 +37,8 @@ public class CommentController {
             @ApiResponse(responseCode = "404", description = "Not found")
     })
     public ResponseEntity<CommentsDto> getCommentsByIdAd(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(new CommentsDto());
+        List<CommentDto> commentsDto = commentMapper.toCommentsDto(commentService.getCommentByIdAd(id));
+        return ResponseEntity.ok(new CommentsDto(commentsDto.size(), commentsDto));
     }
 
     @PostMapping("/{id}/comments")
@@ -40,9 +48,9 @@ public class CommentController {
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "404", description = "Not found")
     })
-    public ResponseEntity<CommentDto> createCommentAd(@PathVariable("id") Integer id,
+    public ResponseEntity<CommentDto> createAdComment(@PathVariable("id") Integer id,
                                                       @RequestBody @Valid CreateOrUpdateCommentDto createOrUpdateCommentDto) {
-        return ResponseEntity.ok(new CommentDto());
+        return ResponseEntity.ok(commentMapper.toCommentDto(commentService.createAdComment(id, createOrUpdateCommentDto)));
     }
 
     @DeleteMapping("/{adId}/comments/{commentId}")
@@ -52,8 +60,9 @@ public class CommentController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Not found")
     })
-    public ResponseEntity<Void> deleteCommentByIdAd(@PathVariable("adId") Integer id,
+    public ResponseEntity<Void> deleteCommentByIdAd(@PathVariable("adId") Integer id,          //Зачем id объявления
                                                     @PathVariable("commentId") Integer commentId) {
+        commentService.deleteCommentById(commentId);
         return ResponseEntity.ok().build();
     }
 
@@ -65,9 +74,9 @@ public class CommentController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Not found")
     })
-    public ResponseEntity<Void> updateCommentByIdAd(@PathVariable("adId") Integer id,
+    public ResponseEntity<CommentDto> updateCommentByIdAd(@PathVariable("adId") Integer adId,
                                                     @PathVariable("commentId") Integer commentId,
                                                     @RequestBody @Valid CreateOrUpdateCommentDto createOrUpdateCommentDto) {
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(commentMapper.toCommentDto(commentService.updateComment(adId,commentId, createOrUpdateCommentDto)));
     }
 }

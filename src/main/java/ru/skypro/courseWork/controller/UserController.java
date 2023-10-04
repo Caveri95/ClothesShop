@@ -41,6 +41,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     public ResponseEntity<UserDto> getUser() {
+
         return ResponseEntity.ok(new UserDto());
     }
 
