@@ -8,12 +8,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.courseWork.dto.CommentDto;
 import ru.skypro.courseWork.dto.CommentsDto;
 import ru.skypro.courseWork.dto.CreateOrUpdateCommentDto;
-import ru.skypro.courseWork.entity.Comment;
-import ru.skypro.courseWork.mapper.CommentMapper;
 import ru.skypro.courseWork.service.CommentService;
 
 import javax.validation.Valid;
@@ -27,7 +26,6 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService commentService;
-    private final CommentMapper commentMapper;
 
     @GetMapping("/{id}/comments")
     @Operation(summary = "Получение комментариев объявления", responses = {
@@ -37,7 +35,7 @@ public class CommentController {
             @ApiResponse(responseCode = "404", description = "Not found")
     })
     public ResponseEntity<CommentsDto> getCommentsByIdAd(@PathVariable("id") Integer id) {
-        List<CommentDto> commentsDto = commentMapper.toCommentsDto(commentService.getCommentByIdAd(id));
+        List<CommentDto> commentsDto = commentService.getCommentByIdAd(id);
         return ResponseEntity.ok(new CommentsDto(commentsDto.size(), commentsDto));
     }
 
@@ -49,8 +47,9 @@ public class CommentController {
             @ApiResponse(responseCode = "404", description = "Not found")
     })
     public ResponseEntity<CommentDto> createAdComment(@PathVariable("id") Integer id,
-                                                      @RequestBody @Valid CreateOrUpdateCommentDto createOrUpdateCommentDto) {
-        return ResponseEntity.ok(commentMapper.toCommentDto(commentService.createAdComment(id, createOrUpdateCommentDto)));
+                                                      @RequestBody @Valid CreateOrUpdateCommentDto createOrUpdateCommentDto,
+                                                      Authentication authentication) {
+        return ResponseEntity.ok(commentService.createAdComment(id, createOrUpdateCommentDto, authentication));
     }
 
     @DeleteMapping("/{adId}/comments/{commentId}")
@@ -76,7 +75,8 @@ public class CommentController {
     })
     public ResponseEntity<CommentDto> updateCommentByIdAd(@PathVariable("adId") Integer adId,
                                                     @PathVariable("commentId") Integer commentId,
-                                                    @RequestBody @Valid CreateOrUpdateCommentDto createOrUpdateCommentDto) {
-        return ResponseEntity.ok(commentMapper.toCommentDto(commentService.updateComment(adId,commentId, createOrUpdateCommentDto)));
+                                                    @RequestBody @Valid CreateOrUpdateCommentDto createOrUpdateCommentDto,
+                                                          Authentication authentication) {
+        return ResponseEntity.ok(commentService.updateComment(adId,commentId, createOrUpdateCommentDto, authentication));
     }
 }

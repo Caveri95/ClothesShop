@@ -1,5 +1,6 @@
 package ru.skypro.courseWork.service;
 
+import org.springframework.security.core.Authentication;
 import ru.skypro.courseWork.dto.CommentDto;
 import ru.skypro.courseWork.dto.CreateOrUpdateCommentDto;
 import ru.skypro.courseWork.entity.Comment;
@@ -7,11 +8,14 @@ import ru.skypro.courseWork.entity.Comment;
 import java.util.List;
 
 public interface CommentService {
-    List<Comment> getCommentByIdAd(Integer id);
+    List<CommentDto> getCommentByIdAd(Integer id);
 
-    Comment createAdComment(Integer id, CreateOrUpdateCommentDto createOrUpdateCommentDto);
+    CommentDto createAdComment(Integer id, CreateOrUpdateCommentDto createOrUpdateCommentDto, Authentication authentication);
 
     void deleteCommentById(Integer commentId);
 
-    Comment updateComment(Integer adId, Integer commentId, CreateOrUpdateCommentDto createOrUpdateCommentDto);
+    CommentDto updateComment(Integer adId,
+                          Integer commentId,
+                          CreateOrUpdateCommentDto createOrUpdateCommentDto,
+                          Authentication authentication);
 }

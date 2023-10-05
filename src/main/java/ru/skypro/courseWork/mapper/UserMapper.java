@@ -19,7 +19,7 @@ public interface UserMapper {
     @Mapping(target = "image", source = "image", ignore = true)
     User toUserEntity(UserDto userDto);
 
-    UpdateUserDto toUpdateUserDto(UserDto userDto);
+    UpdateUserDto toUpdateUserDto(User user);
 
     @Named("imageToPathString")
     default String imageToPathString(Image image) {

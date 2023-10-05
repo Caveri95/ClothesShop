@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.courseWork.dto.*;
@@ -38,7 +39,7 @@ public class AdController {
                     @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = AdsDto.class)))})
     })
     public ResponseEntity<AdsDto> getAllAds() {
-        List<AdDto> adsDto = adMapper.toAdsDto(adService.getAllAds());
+        List<AdDto> adsDto = adService.getAllAds();
 
         return ResponseEntity.ok(new AdsDto(adsDto.size(), adsDto));
     }
@@ -50,8 +51,9 @@ public class AdController {
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     public ResponseEntity<AdDto> createAd(@RequestParam @Valid CreateOrUpdateAdDto properties,
-                                          @RequestParam MultipartFile image) throws IOException {
-        return ResponseEntity.ok(adMapper.toAdDto(adService.createAd(properties, image)));
+                                          @RequestParam MultipartFile image,
+                                          Authentication authentication) throws IOException {
+        return ResponseEntity.ok(adService.createAd(properties, image, authentication));
     }
 
     @GetMapping("/{id}")
@@ -95,8 +97,8 @@ public class AdController {
                     @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = AdsDto.class)))}),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<AdsDto> getAllMeAds() {
-        List<AdDto> adsDto = adMapper.toAdsDto(adService.getAllMyAds());
+    public ResponseEntity<AdsDto> getAllMeAds(Authentication authentication) {
+        List<AdDto> adsDto = adService.getAllMyAds(authentication);
         return ResponseEntity.ok(new AdsDto(adsDto.size(), adsDto));
     }
 

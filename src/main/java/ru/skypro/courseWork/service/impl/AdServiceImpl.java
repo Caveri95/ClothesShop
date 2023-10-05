@@ -1,6 +1,7 @@
 package ru.skypro.courseWork.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.courseWork.dto.AdDto;
@@ -9,6 +10,7 @@ import ru.skypro.courseWork.dto.ExtendedAdDto;
 import ru.skypro.courseWork.entity.Ad;
 import ru.skypro.courseWork.entity.User;
 import ru.skypro.courseWork.exception.AdNotFoundException;
+import ru.skypro.courseWork.exception.UserNotFoundException;
 import ru.skypro.courseWork.mapper.AdMapper;
 import ru.skypro.courseWork.repository.AdRepository;
 import ru.skypro.courseWork.repository.CommentRepository;
@@ -33,54 +35,68 @@ public class AdServiceImpl implements AdService {
 
 
     @Override
-    public List<Ad> getAllAds() {
-        return adRepository.findAll();
+    public List<AdDto> getAllAds() {
+        return adMapper.toAdsDto(adRepository.findAll());
     }
 
     @Override
-    public Ad createAd(CreateOrUpdateAdDto properties, MultipartFile image) throws IOException {
+    public AdDto createAd(CreateOrUpdateAdDto properties, MultipartFile image, Authentication authentication) throws IOException {
 
-        //User user = userRepository.findBy()    Ищем юзера по какому то критерию
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
 
-        Ad adEntity = adMapper.toAdEntity(properties);
-        adEntity.setImage(imageService.upload(image));
-        adEntity.setAuthor(new User());   // сюда нужно подставить юзера, который выше
+        Ad ad = adMapper.toAdEntity(properties);
+        ad.setImage(imageService.upload(image));
+        ad.setAuthor(user);
+        adRepository.save(ad);
 
-        return adRepository.save(adEntity);
+        return adMapper.toAdDto(ad);
     }
 
     @Override
     public void updateImage(Integer id, MultipartFile image) throws IOException {
-        Ad ad = adRepository.findById(id).orElseThrow(AdNotFoundException::new);
+
+        Ad ad = findAdById(id);
         imageRepository.delete(ad.getImage());
         ad.setImage(imageService.upload(image));
         adRepository.save(ad);
-
     }
 
     @Override
-    public List<Ad> getAllMyAds() {
+    public List<AdDto> getAllMyAds(Authentication authentication) {
 
-        Integer id = 1;//Откуда то вытаскиваем id пользователя
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
 
-        return adRepository.findAllByAuthorId(id);
+        return adMapper.toAdsDto(adRepository.findAllByAuthorId(user.getId()));
     }
 
     @Override
     public ExtendedAdDto getAdFullInfo(Integer id) {
-        return adMapper.toExtendAdDto(adRepository.findById(id).orElseThrow(AdNotFoundException::new));
+        return adMapper.toExtendAdDto(findAdById(id));
     }
 
     @Override
     public void deleteById(Integer id) {
 
-        //commentRepository.deleteAll(); По хорошему удалить и комментарии этого объявления (не понятно откуда вытащить)
+        Ad ad = findAdById(id);
+
+        commentRepository.deleteAllByAdPk(ad.getPk());
+        imageRepository.deleteById(ad.getImage().getId());
         adRepository.deleteById(id);
     }
 
     @Override
     public AdDto updateAd(Integer id, CreateOrUpdateAdDto createOrUpdateAdDto) {
 
-        return adMapper.toAdDto(adRepository.findById(id).orElseThrow(AdNotFoundException::new));
+        Ad ad = findAdById(id);
+        ad.setDescription(createOrUpdateAdDto.getDescription());
+        ad.setTitle(createOrUpdateAdDto.getTitle());
+        ad.setPrice(createOrUpdateAdDto.getPrice());
+        adRepository.save(ad);
+
+        return adMapper.toAdDto(ad);
+    }
+
+    private Ad findAdById(Integer id) {
+        return adRepository.findById(id).orElseThrow(AdNotFoundException::new);
     }
 }

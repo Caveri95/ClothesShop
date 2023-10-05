@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.courseWork.dto.NewPasswordDto;
@@ -18,6 +19,7 @@ import ru.skypro.courseWork.mapper.UserMapper;
 import ru.skypro.courseWork.service.UserService;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
@@ -46,8 +48,8 @@ public class UserController {
                     @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = UserDto.class)))}),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<UserDto> getUser() {
-        return ResponseEntity.ok(userMapper.toUserDto(userService.getMyInfo()));
+    public ResponseEntity<UserDto> getUser(Authentication authentication) {
+        return ResponseEntity.ok(userService.getMyInfo(authentication));
     }
 
     @PatchMapping("/me")
@@ -56,9 +58,9 @@ public class UserController {
                     @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = UpdateUserDto.class)))}),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<UpdateUserDto> updateUser(@RequestBody @Valid UpdateUserDto updateUserDto) {
-        //Метод для обновления пользователя
-        return ResponseEntity.ok(new UpdateUserDto());
+    public ResponseEntity<UpdateUserDto> updateUser(@RequestBody @Valid UpdateUserDto updateUserDto,
+                                                    Authentication authentication) {
+        return ResponseEntity.ok(userService.updateUser(updateUserDto, authentication));
     }
 
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -66,8 +68,8 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<Void> updateUserAvatar(@RequestParam MultipartFile image) {
-        //Метод для обновления аватара
+    public ResponseEntity<Void> updateUserAvatar(@RequestParam MultipartFile image, Authentication authentication) throws IOException {
+        userService.updateAvatar(image, authentication);
         return ResponseEntity.ok().build();
     }
 

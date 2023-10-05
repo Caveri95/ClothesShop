@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository;
 import ru.skypro.courseWork.entity.Image;
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Integer> {
+
 }

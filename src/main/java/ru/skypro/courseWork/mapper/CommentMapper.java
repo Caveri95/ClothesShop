@@ -25,7 +25,7 @@ public interface CommentMapper {
 
     List<CommentDto> toCommentsDto(List<Comment> comments);
 
-    @Mapping(target = "createAt", source = "text", qualifiedByName = "setCreateAt")  //Так вообще можно делать?
+    //@Mapping(target = "createAt", source = "text", qualifiedByName = "setCreateAt")  //Так вообще можно делать?
     Comment toCommentEntityFromCreateOrUpdateComment(CreateOrUpdateCommentDto createOrUpdateCommentDto);
 
     @Named("authorImageToString")
@@ -38,8 +38,8 @@ public interface CommentMapper {
         return user.getId();
     }
 
-    @Named("setCreateAt")
+    /*@Named("setCreateAt")
     default Long createAt(String str) {
         return System.currentTimeMillis();
-    }
+    }*/
 }
