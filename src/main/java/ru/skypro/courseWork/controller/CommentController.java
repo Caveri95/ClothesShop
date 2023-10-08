@@ -14,6 +14,7 @@ import ru.skypro.courseWork.dto.CommentDto;
 import ru.skypro.courseWork.dto.CommentsDto;
 import ru.skypro.courseWork.dto.CreateOrUpdateCommentDto;
 import ru.skypro.courseWork.service.CommentService;
+import ru.skypro.courseWork.service.ImageService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService commentService;
+    private final ImageService imageService;
 
     @GetMapping("/{id}/comments")
     @Operation(summary = "Получение комментариев объявления", responses = {

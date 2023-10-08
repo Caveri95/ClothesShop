@@ -1,6 +1,7 @@
 package ru.skypro.courseWork.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,10 +20,12 @@ import ru.skypro.courseWork.repository.UserRepository;
 import ru.skypro.courseWork.service.AdService;
 import ru.skypro.courseWork.service.ImageService;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class AdServiceImpl implements AdService {
 

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.courseWork.dto.UpdateUserDto;
 import ru.skypro.courseWork.dto.UserDto;
+import ru.skypro.courseWork.entity.Image;
 import ru.skypro.courseWork.entity.User;
 import ru.skypro.courseWork.exception.UserNotFoundException;
 import ru.skypro.courseWork.mapper.UserMapper;
@@ -13,9 +14,11 @@ import ru.skypro.courseWork.repository.UserRepository;
 import ru.skypro.courseWork.service.ImageService;
 import ru.skypro.courseWork.service.UserService;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -34,7 +37,7 @@ public class UserServiceImpl implements UserService {
         User user = findUserByEmail(authentication);
         user.setFirstName(updateUserDto.getFirstName());
         user.setLastName(updateUserDto.getLastName());
-        user.setPhone(user.getPhone());
+        user.setPhone(updateUserDto.getPhone());
         return userMapper.toUpdateUserDto(user);
     }
 

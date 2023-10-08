@@ -16,6 +16,7 @@ import ru.skypro.courseWork.dto.NewPasswordDto;
 import ru.skypro.courseWork.dto.UpdateUserDto;
 import ru.skypro.courseWork.dto.UserDto;
 import ru.skypro.courseWork.mapper.UserMapper;
+import ru.skypro.courseWork.service.ImageService;
 import ru.skypro.courseWork.service.UserService;
 
 import javax.validation.Valid;
@@ -29,7 +30,8 @@ import java.io.IOException;
 public class UserController {
 
     private final UserService userService;
-    private final UserMapper userMapper;
+    private final ImageService imageService;
+
 
     @PostMapping("/set_password")
     @Operation(summary = "Обновление пароля", responses = {
@@ -73,4 +75,8 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/image/{id}")
+    public ResponseEntity<byte[]> getImage(@PathVariable int id, Authentication authentication){
+        return ResponseEntity.ok(imageService.getImage(id));
+    }
 }

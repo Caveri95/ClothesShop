@@ -16,6 +16,7 @@ import ru.skypro.courseWork.dto.*;
 import ru.skypro.courseWork.entity.Ad;
 import ru.skypro.courseWork.mapper.AdMapper;
 import ru.skypro.courseWork.service.AdService;
+import ru.skypro.courseWork.service.ImageService;
 import ru.skypro.courseWork.service.impl.AdServiceImpl;
 
 import javax.validation.Valid;
@@ -31,7 +32,7 @@ import java.util.List;
 public class AdController {
 
     private final AdService adService;
-    private final AdMapper adMapper;
+    private final ImageService imageService;
 
     @GetMapping
     @Operation(summary = "Получение всех объявлений", responses = {
@@ -50,8 +51,8 @@ public class AdController {
                     @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = AdDto.class)))}),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<AdDto> createAd(@RequestParam @Valid CreateOrUpdateAdDto properties,
-                                          @RequestParam MultipartFile image,
+    public ResponseEntity<AdDto> createAd(@RequestPart @Valid CreateOrUpdateAdDto properties,
+                                          @RequestPart MultipartFile image,
                                           Authentication authentication) throws IOException {
         return ResponseEntity.ok(adService.createAd(properties, image, authentication));
     }
@@ -113,5 +114,10 @@ public class AdController {
     public ResponseEntity<String> updateImage(@PathVariable("id") Integer id, @NotNull @RequestParam MultipartFile image) throws IOException {
         adService.updateImage(id, image);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/image/{id}")
+    public ResponseEntity<byte[]> getImage(@PathVariable int id, Authentication authentication){
+        return ResponseEntity.ok(imageService.getImage(id));
     }
 }

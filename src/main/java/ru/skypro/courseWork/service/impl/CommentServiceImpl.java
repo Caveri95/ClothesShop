@@ -17,10 +17,12 @@ import ru.skypro.courseWork.repository.CommentRepository;
 import ru.skypro.courseWork.repository.UserRepository;
 import ru.skypro.courseWork.service.CommentService;
 
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
@@ -40,7 +42,7 @@ public class CommentServiceImpl implements CommentService {
         Ad ad = adRepository.findById(id).orElseThrow(AdNotFoundException::new);
         Comment comment = commentMapper.toCommentEntityFromCreateOrUpdateComment(createOrUpdateCommentDto);
 
-        comment.setCreateAt(Instant.now().toEpochMilli());
+        //comment.setCreateAt(Instant.now().toEpochMilli());
         comment.setAd(ad);
         comment.setAuthor(user);
 
@@ -63,10 +65,11 @@ public class CommentServiceImpl implements CommentService {
         Ad ad = adRepository.findById(adId).orElseThrow(AdNotFoundException::new);
         Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
 
-        commentMapper.toCommentEntityFromCreateOrUpdateComment(createOrUpdateCommentDto);
+        comment.setText(createOrUpdateCommentDto.getText());
         comment.setCreateAt(Instant.now().toEpochMilli());
         comment.setAd(ad);
         comment.setAuthor(user);
+        commentRepository.save(comment);
         return commentMapper.toCommentDto(comment);
     }
 }

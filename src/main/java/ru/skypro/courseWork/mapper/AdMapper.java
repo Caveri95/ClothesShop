@@ -25,9 +25,9 @@ public interface AdMapper {
     List<AdDto> toAdsDto(List<Ad> ads);
 
 
-    /*@Mapping(target = "author", ignore = true)
+    @Mapping(target = "author", ignore = true)
     @Mapping(target = "image", ignore = true)
-    @Mapping(target = "pk", ignore = true)*/
+    @Mapping(target = "pk", ignore = true)
     Ad toAdEntity(CreateOrUpdateAdDto createOrUpdateAdDto);
 
     @Mapping(target = "authorFirstName", source = "author.firstName")
