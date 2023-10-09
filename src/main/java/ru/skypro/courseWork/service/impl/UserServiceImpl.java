@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.courseWork.dto.UpdateUserDto;
 import ru.skypro.courseWork.dto.UserDto;
-import ru.skypro.courseWork.entity.Image;
 import ru.skypro.courseWork.entity.User;
 import ru.skypro.courseWork.exception.UserNotFoundException;
 import ru.skypro.courseWork.mapper.UserMapper;

@@ -13,11 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.courseWork.dto.*;
-import ru.skypro.courseWork.entity.Ad;
-import ru.skypro.courseWork.mapper.AdMapper;
 import ru.skypro.courseWork.service.AdService;
 import ru.skypro.courseWork.service.ImageService;
-import ru.skypro.courseWork.service.impl.AdServiceImpl;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -117,7 +114,7 @@ public class AdController {
     }
 
     @GetMapping("/image/{id}")
-    public ResponseEntity<byte[]> getImage(@PathVariable int id, Authentication authentication){
+    public ResponseEntity<byte[]> getImage(@PathVariable int id){
         return ResponseEntity.ok(imageService.getImage(id));
     }
 }

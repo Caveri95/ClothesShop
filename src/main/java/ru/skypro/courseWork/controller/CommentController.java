@@ -27,7 +27,6 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService commentService;
-    private final ImageService imageService;
 
     @GetMapping("/{id}/comments")
     @Operation(summary = "Получение комментариев объявления", responses = {
@@ -76,9 +75,9 @@ public class CommentController {
             @ApiResponse(responseCode = "404", description = "Not found")
     })
     public ResponseEntity<CommentDto> updateCommentByIdAd(@PathVariable("adId") Integer adId,
-                                                    @PathVariable("commentId") Integer commentId,
-                                                    @RequestBody @Valid CreateOrUpdateCommentDto createOrUpdateCommentDto,
+                                                          @PathVariable("commentId") Integer commentId,
+                                                          @RequestBody @Valid CreateOrUpdateCommentDto createOrUpdateCommentDto,
                                                           Authentication authentication) {
-        return ResponseEntity.ok(commentService.updateComment(adId,commentId, createOrUpdateCommentDto, authentication));
+        return ResponseEntity.ok(commentService.updateComment(adId, commentId, createOrUpdateCommentDto, authentication));
     }
 }

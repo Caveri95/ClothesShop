@@ -1,7 +1,6 @@
 package ru.skypro.courseWork.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +16,7 @@ import ru.skypro.courseWork.repository.AdRepository;
 import ru.skypro.courseWork.repository.CommentRepository;
 import ru.skypro.courseWork.repository.ImageRepository;
 import ru.skypro.courseWork.repository.UserRepository;
+import ru.skypro.courseWork.security.service.SecurityUtils;
 import ru.skypro.courseWork.service.AdService;
 import ru.skypro.courseWork.service.ImageService;
 
@@ -35,6 +35,7 @@ public class AdServiceImpl implements AdService {
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
     private final CommentRepository commentRepository;
+    private final SecurityUtils securityUtils;
 
 
     @Override
@@ -82,6 +83,8 @@ public class AdServiceImpl implements AdService {
 
         Ad ad = findAdById(id);
 
+        securityUtils.checkAccessToAd(ad);
+
         commentRepository.deleteAllByAdPk(ad.getPk());
         imageRepository.deleteById(ad.getImage().getId());
         adRepository.deleteById(id);
@@ -91,6 +94,9 @@ public class AdServiceImpl implements AdService {
     public AdDto updateAd(Integer id, CreateOrUpdateAdDto createOrUpdateAdDto) {
 
         Ad ad = findAdById(id);
+
+        securityUtils.checkAccessToAd(ad);
+
         ad.setDescription(createOrUpdateAdDto.getDescription());
         ad.setTitle(createOrUpdateAdDto.getTitle());
         ad.setPrice(createOrUpdateAdDto.getPrice());
