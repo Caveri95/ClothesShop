@@ -5,11 +5,15 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
 import ru.skypro.courseWork.dto.AdDto;
+import ru.skypro.courseWork.dto.AdsDto;
 import ru.skypro.courseWork.dto.CreateOrUpdateAdDto;
 import ru.skypro.courseWork.dto.ExtendedAdDto;
 import ru.skypro.courseWork.entity.Ad;
 import ru.skypro.courseWork.entity.Image;
 import ru.skypro.courseWork.entity.User;
+
+import java.util.Collection;
+import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface AdMapper {
@@ -17,6 +21,9 @@ public interface AdMapper {
     @Mapping(target = "image", source = "image", qualifiedByName = "imageToPathString")
     @Mapping(target = "author", source = "author", qualifiedByName = "authorToInt")
     AdDto toAdDto(Ad ad);
+
+    List<AdDto> toAdsDto(List<Ad> ads);
+
 
     @Mapping(target = "author", ignore = true)
     @Mapping(target = "image", ignore = true)

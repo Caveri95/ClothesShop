@@ -16,16 +16,13 @@ public class Comment {
     @JoinColumn(name = "user_id")
     private User author;
 
-    @OneToOne
-    @JoinColumn(name = "image_id")
-    private Image authorImage;
-
-    @Column(nullable = false)
-    private String authorFirstName;
-
     @Column(nullable = false)
     private Long createAt;
 
     @Column(nullable = false)
     private String text;
+
+    @ManyToOne
+    @JoinColumn(name = "ad_id")
+    private Ad ad;
 }

@@ -1,6 +1,7 @@
 package ru.skypro.courseWork.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -14,6 +15,6 @@ public class Image {
     private Integer id;
 
     @Lob
-    @Column(nullable = false)
+    @Column(columnDefinition = "oid", nullable = false)
     private byte[] data;
 }

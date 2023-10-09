@@ -8,12 +8,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.courseWork.dto.CommentDto;
 import ru.skypro.courseWork.dto.CommentsDto;
 import ru.skypro.courseWork.dto.CreateOrUpdateCommentDto;
+import ru.skypro.courseWork.service.CommentService;
+import ru.skypro.courseWork.service.ImageService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
@@ -21,6 +25,9 @@ import javax.validation.Valid;
 @RequestMapping("/ads")
 @Tag(name = "Комментарии")
 public class CommentController {
+
+    private final CommentService commentService;
+    private final ImageService imageService;
 
     @GetMapping("/{id}/comments")
     @Operation(summary = "Получение комментариев объявления", responses = {
@@ -30,7 +37,8 @@ public class CommentController {
             @ApiResponse(responseCode = "404", description = "Not found")
     })
     public ResponseEntity<CommentsDto> getCommentsByIdAd(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(new CommentsDto());
+        List<CommentDto> commentsDto = commentService.getCommentByIdAd(id);
+        return ResponseEntity.ok(new CommentsDto(commentsDto.size(), commentsDto));
     }
 
     @PostMapping("/{id}/comments")
@@ -40,9 +48,10 @@ public class CommentController {
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "404", description = "Not found")
     })
-    public ResponseEntity<CommentDto> createCommentAd(@PathVariable("id") Integer id,
-                                                      @RequestBody @Valid CreateOrUpdateCommentDto createOrUpdateCommentDto) {
-        return ResponseEntity.ok(new CommentDto());
+    public ResponseEntity<CommentDto> createAdComment(@PathVariable("id") Integer id,
+                                                      @RequestBody @Valid CreateOrUpdateCommentDto createOrUpdateCommentDto,
+                                                      Authentication authentication) {
+        return ResponseEntity.ok(commentService.createAdComment(id, createOrUpdateCommentDto, authentication));
     }
 
     @DeleteMapping("/{adId}/comments/{commentId}")
@@ -52,8 +61,9 @@ public class CommentController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Not found")
     })
-    public ResponseEntity<Void> deleteCommentByIdAd(@PathVariable("adId") Integer id,
+    public ResponseEntity<Void> deleteCommentByIdAd(@PathVariable("adId") Integer id,          //Зачем id объявления
                                                     @PathVariable("commentId") Integer commentId) {
+        commentService.deleteCommentById(commentId);
         return ResponseEntity.ok().build();
     }
 
@@ -65,9 +75,10 @@ public class CommentController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Not found")
     })
-    public ResponseEntity<Void> updateCommentByIdAd(@PathVariable("adId") Integer id,
+    public ResponseEntity<CommentDto> updateCommentByIdAd(@PathVariable("adId") Integer adId,
                                                     @PathVariable("commentId") Integer commentId,
-                                                    @RequestBody @Valid CreateOrUpdateCommentDto createOrUpdateCommentDto) {
-        return ResponseEntity.ok().build();
+                                                    @RequestBody @Valid CreateOrUpdateCommentDto createOrUpdateCommentDto,
+                                                          Authentication authentication) {
+        return ResponseEntity.ok(commentService.updateComment(adId,commentId, createOrUpdateCommentDto, authentication));
     }
 }

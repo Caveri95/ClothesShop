@@ -9,6 +9,7 @@ import javax.persistence.*;
 public class Ad {
 
     @Id
+    @Column(name = "ad_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer pk;
 
