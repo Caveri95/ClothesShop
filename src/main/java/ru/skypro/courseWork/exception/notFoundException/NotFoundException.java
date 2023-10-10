@@ -1,4 +1,4 @@
-package ru.skypro.courseWork.exception;
+package ru.skypro.courseWork.exception.notFoundException;
 
 public class NotFoundException extends RuntimeException {
 

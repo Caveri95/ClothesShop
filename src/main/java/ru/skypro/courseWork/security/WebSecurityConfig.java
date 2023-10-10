@@ -1,4 +1,4 @@
-package ru.skypro.courseWork.security.utils;
+package ru.skypro.courseWork.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import ru.skypro.courseWork.security.service.UserService;
+import ru.skypro.courseWork.security.service.SecurityUserService;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -17,7 +17,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-    private final UserService userService;
+    private final SecurityUserService securityUserService;
 
     private static final String[] AUTH_WHITELIST = {
             "/swagger-resources/**",
@@ -54,14 +54,13 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+
+    //Нужен ли этот бин?? Без него и так все работает
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {       //Даем Логин/пароль а он в ответ говорит есть такой пользователь или нет. Если да, то положить его в securityContext
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setPasswordEncoder(passwordEncoder());
-        authenticationProvider.setUserDetailsService(userService);     //  setUserDetailsService предоставляет юзеров
+        authenticationProvider.setUserDetailsService(securityUserService);     //  setUserDetailsService предоставляет юзеров
         return authenticationProvider;
     }
-
-
-
 }

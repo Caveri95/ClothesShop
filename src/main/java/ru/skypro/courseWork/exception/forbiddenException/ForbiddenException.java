@@ -1,4 +1,4 @@
-package ru.skypro.courseWork.exception;
+package ru.skypro.courseWork.exception.forbiddenException;
 
 public class ForbiddenException extends RuntimeException {
 

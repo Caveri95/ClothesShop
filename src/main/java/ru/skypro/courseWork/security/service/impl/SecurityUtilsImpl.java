@@ -10,13 +10,13 @@ import ru.skypro.courseWork.dto.Role;
 import ru.skypro.courseWork.entity.Ad;
 import ru.skypro.courseWork.entity.Comment;
 import ru.skypro.courseWork.entity.User;
-import ru.skypro.courseWork.exception.AdForbiddenException;
-import ru.skypro.courseWork.exception.CommentForbiddenException;
-import ru.skypro.courseWork.exception.UserNotFoundException;
+import ru.skypro.courseWork.exception.forbiddenException.AdForbiddenException;
+import ru.skypro.courseWork.exception.forbiddenException.CommentForbiddenException;
+import ru.skypro.courseWork.exception.notFoundException.UserNotFoundException;
 import ru.skypro.courseWork.repository.UserRepository;
 import ru.skypro.courseWork.security.service.SecurityUtils;
-import ru.skypro.courseWork.security.service.UserService;
 
+import javax.transaction.Transactional;
 import java.util.Objects;
 
 @Service
@@ -25,7 +25,6 @@ public class SecurityUtilsImpl implements SecurityUtils {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserService userService;
 
     @Override
     public void checkAccessToComment(Comment comment) {
@@ -51,15 +50,14 @@ public class SecurityUtilsImpl implements SecurityUtils {
     }
 
     @Override
-    public void updatePassword(NewPasswordDto newPasswordDto) {
+    @Transactional
+    public void updatePassword(NewPasswordDto newPasswordDto) { //   Зачем в ДТО поле с текущим паролем?
+                                                                // (Обычно новый и просят повторить новый)
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (newPasswordDto.getCurrentPassword().equals(userService.loadUserByUsername(authentication.getName()).getPassword())) {
 
-            User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
-            user.setPassword(passwordEncoder.encode(newPasswordDto.getNewPassword()));
-            userRepository.save(user);
-        }
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
+        user.setPassword(passwordEncoder.encode(newPasswordDto.getNewPassword()));
+        userRepository.save(user);
     }
-
 }

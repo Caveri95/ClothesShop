@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.courseWork.entity.Image;
-import ru.skypro.courseWork.exception.ImageNotFoundException;
+import ru.skypro.courseWork.exception.notFoundException.ImageNotFoundException;
 import ru.skypro.courseWork.repository.ImageRepository;
 import ru.skypro.courseWork.service.ImageService;
 
@@ -13,12 +13,13 @@ import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+
 public class ImageServiceImpl implements ImageService {
 
     private final ImageRepository imageRepository;
 
     @Override
+    @Transactional
     public Image upload(MultipartFile imageFile) throws IOException {
         Image image = new Image();
         image.setData(imageFile.getBytes());
@@ -31,6 +32,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    @Transactional
     public byte[] getImage(Integer imageId) {
         Image image = imageRepository.findById(imageId).orElseThrow(ImageNotFoundException::new);
         return image.getData();

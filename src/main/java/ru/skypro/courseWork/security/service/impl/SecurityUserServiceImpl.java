@@ -1,25 +1,24 @@
-package ru.skypro.courseWork.security.service;
+package ru.skypro.courseWork.security.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.skypro.courseWork.dto.Role;
 import ru.skypro.courseWork.entity.User;
-import ru.skypro.courseWork.exception.UserNotFoundException;
+import ru.skypro.courseWork.exception.notFoundException.UserNotFoundException;
 import ru.skypro.courseWork.repository.UserRepository;
+import ru.skypro.courseWork.security.service.SecurityUserService;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {   //Задача сервиса - по имени пользователя предоставить пол-ля
+public class SecurityUserServiceImpl implements SecurityUserService {
 
     private final UserRepository userRepository;
 
@@ -43,5 +42,4 @@ public class UserService implements UserDetailsService {   //Задача сер
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.name())).collect(Collectors.toList());
     }
-
 }
