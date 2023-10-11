@@ -8,18 +8,15 @@ import ru.skypro.courseWork.exception.notFoundException.ImageNotFoundException;
 import ru.skypro.courseWork.repository.ImageRepository;
 import ru.skypro.courseWork.service.ImageService;
 
-import javax.transaction.Transactional;
 import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
-
 public class ImageServiceImpl implements ImageService {
 
     private final ImageRepository imageRepository;
 
     @Override
-    @Transactional
     public Image upload(MultipartFile imageFile) throws IOException {
         Image image = new Image();
         image.setData(imageFile.getBytes());
@@ -27,16 +24,8 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public void deleteImage(Image image) {
-        imageRepository.delete(image);
-    }
-
-    @Override
-    @Transactional
     public byte[] getImage(Integer imageId) {
         Image image = imageRepository.findById(imageId).orElseThrow(ImageNotFoundException::new);
         return image.getData();
     }
-
-
 }

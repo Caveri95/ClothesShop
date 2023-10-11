@@ -1,6 +1,7 @@
 package ru.skypro.courseWork.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,12 +26,13 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final ImageService imageService;
     @Override
+    @PreAuthorize("isAuthenticated()")
     public UserDto getMyInfo(Authentication authentication) {
-
         return userMapper.toUserDto(findUserByEmail(authentication));
     }
 
     @Override
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public UpdateUserDto updateUser(UpdateUserDto updateUserDto, Authentication authentication) {
 
         User user = findUserByEmail(authentication);
@@ -41,7 +43,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public void updateAvatar(MultipartFile image, Authentication authentication) throws IOException {
+
         User user = findUserByEmail(authentication);
         user.setImage(imageService.upload(image));
         userRepository.save(user);

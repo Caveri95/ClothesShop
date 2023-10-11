@@ -33,7 +33,6 @@ public class UserController {
     private final ImageService imageService;
     private final SecurityUtils securityUtils;
 
-
     @PostMapping("/set_password")
     @Operation(summary = "Обновление пароля", responses = {
             @ApiResponse(responseCode = "200", description = "OK"),

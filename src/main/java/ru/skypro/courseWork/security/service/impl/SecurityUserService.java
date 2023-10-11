@@ -31,8 +31,6 @@ public class SecurityUserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = findByUsername(username);
 
-        //Создаем спринговского Юзера, в которого передаем юзернейм, пароль,
-        // коллекцию прав доступа(тут проблема, у нас роли -> используем метод)
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),

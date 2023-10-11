@@ -1,6 +1,7 @@
 package ru.skypro.courseWork.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +17,6 @@ import ru.skypro.courseWork.repository.AdRepository;
 import ru.skypro.courseWork.repository.CommentRepository;
 import ru.skypro.courseWork.repository.ImageRepository;
 import ru.skypro.courseWork.repository.UserRepository;
-import ru.skypro.courseWork.security.service.SecurityUtils;
 import ru.skypro.courseWork.service.AdService;
 import ru.skypro.courseWork.service.ImageService;
 
@@ -35,7 +35,6 @@ public class AdServiceImpl implements AdService {
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
     private final CommentRepository commentRepository;
-    private final SecurityUtils securityUtils;
 
 
     @Override
@@ -44,6 +43,7 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
+    @PreAuthorize("isAuthenticated() or hasAnyRole('ADMIN', 'USER')")
     public AdDto createAd(CreateOrUpdateAdDto properties, MultipartFile image, Authentication authentication) throws IOException {
 
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
@@ -57,6 +57,7 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN') or @adServiceImpl.findAdById(#id).getAuthor().getEmail()==authentication.name")
     public void updateImage(Integer id, MultipartFile image) throws IOException {
 
         Ad ad = findAdById(id);
@@ -66,6 +67,7 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
+    @PreAuthorize("isAuthenticated()")
     public List<AdDto> getAllMyAds(Authentication authentication) {
 
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
@@ -74,16 +76,16 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
+    @PreAuthorize("isAuthenticated()")
     public ExtendedAdDto getAdFullInfo(Integer id) {
         return adMapper.toExtendAdDto(findAdById(id));
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN') or @adServiceImpl.findAdById(#id).getAuthor().getEmail()==authentication.name")
     public void deleteById(Integer id) {
 
         Ad ad = findAdById(id);
-
-        securityUtils.checkAccessToAd(ad);
 
         commentRepository.deleteAllByAdPk(ad.getPk());
         imageRepository.deleteById(ad.getImage().getId());
@@ -91,11 +93,10 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN') or @adServiceImpl.findAdById(#id).getAuthor().getEmail()==authentication.name")
     public AdDto updateAd(Integer id, CreateOrUpdateAdDto createOrUpdateAdDto) {
 
         Ad ad = findAdById(id);
-
-        securityUtils.checkAccessToAd(ad);
 
         ad.setDescription(createOrUpdateAdDto.getDescription());
         ad.setTitle(createOrUpdateAdDto.getTitle());
@@ -105,7 +106,7 @@ public class AdServiceImpl implements AdService {
         return adMapper.toAdDto(ad);
     }
 
-    private Ad findAdById(Integer id) {
+    public Ad findAdById(Integer id) {
         return adRepository.findById(id).orElseThrow(AdNotFoundException::new);
     }
 }

@@ -48,7 +48,6 @@ public class AuthServiceImpl implements AuthService {
         if (registerDto.getRole() == null) {
             user.setRole(Role.USER);
         }
-        // Можно было б и установить изображение, а то фронт ругается на стандартное
 
         userRepository.save(user);
         return true;
