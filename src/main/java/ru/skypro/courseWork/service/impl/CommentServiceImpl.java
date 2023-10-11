@@ -37,7 +37,6 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @PreAuthorize("isAuthenticated()")
     public CommentDto createAdComment(Integer id, CreateOrUpdateCommentDto createOrUpdateCommentDto, Authentication authentication) {
 
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
@@ -66,7 +65,9 @@ public class CommentServiceImpl implements CommentService {
                                     CreateOrUpdateCommentDto createOrUpdateCommentDto,
                                     Authentication authentication) {
 
-        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
+
+        String email = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new).getAuthor().getEmail();
+        User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
         Ad ad = adRepository.findById(adId).orElseThrow(AdNotFoundException::new);
         Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
 

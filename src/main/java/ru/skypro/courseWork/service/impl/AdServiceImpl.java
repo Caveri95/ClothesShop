@@ -43,7 +43,6 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
-    @PreAuthorize("isAuthenticated() or hasAnyRole('ADMIN', 'USER')")
     public AdDto createAd(CreateOrUpdateAdDto properties, MultipartFile image, Authentication authentication) throws IOException {
 
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
@@ -67,7 +66,6 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
-    @PreAuthorize("isAuthenticated()")
     public List<AdDto> getAllMyAds(Authentication authentication) {
 
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
@@ -76,7 +74,6 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
-    @PreAuthorize("isAuthenticated()")
     public ExtendedAdDto getAdFullInfo(Integer id) {
         return adMapper.toExtendAdDto(findAdById(id));
     }
