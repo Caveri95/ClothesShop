@@ -30,6 +30,9 @@ public interface UserMapper {
 
     @Named("imageToPathString")
     default String imageToPathString(Image image) {
+        if (image == null) {
+            return "/users/image/null";
+        }
         return "/users/image/" + image.getId();
     }
 

@@ -28,6 +28,9 @@ public interface CommentMapper {
 
     @Named("authorImageToString")
     default String authorImageToString(User user) {
+        if (user.getImage() == null) {
+            return "/users/image/null";
+        }
         return "/users/image/" + user.getImage().getId();
     }
 

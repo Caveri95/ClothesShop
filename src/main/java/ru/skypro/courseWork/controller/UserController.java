@@ -40,8 +40,9 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden")
     })
-    public ResponseEntity<Void> updatePassword(@RequestBody @Valid NewPasswordDto newPasswordDto) {
-        securityUtils.updatePassword(newPasswordDto);
+    public ResponseEntity<Void> updatePassword(@RequestBody @Valid NewPasswordDto newPasswordDto,
+                                               Authentication authentication) {
+        securityUtils.updatePassword(newPasswordDto, authentication);
         return ResponseEntity.ok().build();
     }
 

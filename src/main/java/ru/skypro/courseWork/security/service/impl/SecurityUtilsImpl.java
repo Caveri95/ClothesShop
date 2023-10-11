@@ -31,7 +31,7 @@ public class SecurityUtilsImpl implements SecurityUtils {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
+        User user = findUserByEmail(authentication);
 
         if (!Objects.equals(comment.getAuthor().getId(), user.getId()) && !user.getRole().equals(Role.ADMIN)) {
             throw new CommentForbiddenException();
@@ -42,7 +42,7 @@ public class SecurityUtilsImpl implements SecurityUtils {
     public void checkAccessToAd(Ad ad) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
+        User user = findUserByEmail(authentication);
 
         if (!Objects.equals(ad.getAuthor().getId(), user.getId()) && !user.getRole().equals(Role.ADMIN)) {
             throw new AdForbiddenException();
@@ -51,13 +51,17 @@ public class SecurityUtilsImpl implements SecurityUtils {
 
     @Override
     @Transactional
-    public void updatePassword(NewPasswordDto newPasswordDto) { //   Зачем в ДТО поле с текущим паролем?
-                                                                // (Обычно новый и просят повторить новый)
+    public void updatePassword(NewPasswordDto newPasswordDto, Authentication authentication) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = findUserByEmail(authentication);
 
-        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
-        user.setPassword(passwordEncoder.encode(newPasswordDto.getNewPassword()));
-        userRepository.save(user);
+        if (passwordEncoder.matches(newPasswordDto.getCurrentPassword(), user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(newPasswordDto.getNewPassword()));
+            userRepository.save(user);
+        }
+    }
+
+    private User findUserByEmail(Authentication authentication) {
+        return userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
     }
 }

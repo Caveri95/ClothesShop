@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,14 +12,13 @@ import ru.skypro.courseWork.dto.Role;
 import ru.skypro.courseWork.entity.User;
 import ru.skypro.courseWork.exception.notFoundException.UserNotFoundException;
 import ru.skypro.courseWork.repository.UserRepository;
-import ru.skypro.courseWork.security.service.SecurityUserService;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
-public class SecurityUserServiceImpl implements SecurityUserService {
+public class SecurityUserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
@@ -40,6 +40,6 @@ public class SecurityUserServiceImpl implements SecurityUserService {
     }
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
-        return roles.stream().map(role -> new SimpleGrantedAuthority(role.name())).collect(Collectors.toList());
+        return roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.name())).collect(Collectors.toList());
     }
 }

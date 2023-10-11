@@ -1,5 +1,6 @@
 package ru.skypro.courseWork.security.service;
 
+import org.springframework.security.core.Authentication;
 import ru.skypro.courseWork.dto.NewPasswordDto;
 import ru.skypro.courseWork.entity.Ad;
 import ru.skypro.courseWork.entity.Comment;
@@ -11,5 +12,5 @@ public interface SecurityUtils {
 
     void checkAccessToAd(Ad ad);
 
-    void updatePassword(NewPasswordDto newPasswordDto);
+    void updatePassword(NewPasswordDto newPasswordDto, Authentication authentication);
 }

@@ -12,7 +12,6 @@ import ru.skypro.courseWork.exception.invalidParameters.InvalidUsernameException
 import ru.skypro.courseWork.mapper.UserMapper;
 import ru.skypro.courseWork.repository.UserRepository;
 import ru.skypro.courseWork.security.service.AuthService;
-import ru.skypro.courseWork.security.service.SecurityUserService;
 
 import javax.transaction.Transactional;
 

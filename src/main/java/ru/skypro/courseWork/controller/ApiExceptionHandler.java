@@ -19,7 +19,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(InvalidRegistrationParameters.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public String InvalidParameters(InvalidRegistrationParameters e) {
+    public String invalidParameters(InvalidRegistrationParameters e) {
         return e.getMessage();
     }
 
