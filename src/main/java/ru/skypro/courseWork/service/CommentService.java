@@ -3,7 +3,6 @@ package ru.skypro.courseWork.service;
 import org.springframework.security.core.Authentication;
 import ru.skypro.courseWork.dto.CommentDto;
 import ru.skypro.courseWork.dto.CreateOrUpdateCommentDto;
-import ru.skypro.courseWork.entity.Comment;
 
 import java.util.List;
 

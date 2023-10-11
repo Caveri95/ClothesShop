@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.courseWork.dto.NewPasswordDto;
 import ru.skypro.courseWork.dto.UpdateUserDto;
 import ru.skypro.courseWork.dto.UserDto;
-import ru.skypro.courseWork.mapper.UserMapper;
+import ru.skypro.courseWork.security.service.SecurityUtils;
 import ru.skypro.courseWork.service.ImageService;
 import ru.skypro.courseWork.service.UserService;
 
@@ -31,7 +31,7 @@ public class UserController {
 
     private final UserService userService;
     private final ImageService imageService;
-
+    private final SecurityUtils securityUtils;
 
     @PostMapping("/set_password")
     @Operation(summary = "Обновление пароля", responses = {
@@ -39,8 +39,9 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden")
     })
-    public ResponseEntity<Void> updatePassword(@RequestBody @Valid NewPasswordDto newPasswordDto) {
-        //Метод для обновления пароля
+    public ResponseEntity<Void> updatePassword(@RequestBody @Valid NewPasswordDto newPasswordDto,
+                                               Authentication authentication) {
+        securityUtils.updatePassword(newPasswordDto, authentication);
         return ResponseEntity.ok().build();
     }
 
@@ -76,7 +77,7 @@ public class UserController {
     }
 
     @GetMapping("/image/{id}")
-    public ResponseEntity<byte[]> getImage(@PathVariable int id, Authentication authentication){
+    public ResponseEntity<byte[]> getImage(@PathVariable int id) {
         return ResponseEntity.ok(imageService.getImage(id));
     }
 }

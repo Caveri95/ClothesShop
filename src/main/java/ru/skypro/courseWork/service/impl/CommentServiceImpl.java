@@ -1,6 +1,7 @@
 package ru.skypro.courseWork.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.skypro.courseWork.dto.CommentDto;
@@ -8,9 +9,9 @@ import ru.skypro.courseWork.dto.CreateOrUpdateCommentDto;
 import ru.skypro.courseWork.entity.Ad;
 import ru.skypro.courseWork.entity.Comment;
 import ru.skypro.courseWork.entity.User;
-import ru.skypro.courseWork.exception.AdNotFoundException;
-import ru.skypro.courseWork.exception.CommentNotFoundException;
-import ru.skypro.courseWork.exception.UserNotFoundException;
+import ru.skypro.courseWork.exception.notFoundException.AdNotFoundException;
+import ru.skypro.courseWork.exception.notFoundException.CommentNotFoundException;
+import ru.skypro.courseWork.exception.notFoundException.UserNotFoundException;
 import ru.skypro.courseWork.mapper.CommentMapper;
 import ru.skypro.courseWork.repository.AdRepository;
 import ru.skypro.courseWork.repository.CommentRepository;
@@ -42,7 +43,6 @@ public class CommentServiceImpl implements CommentService {
         Ad ad = adRepository.findById(id).orElseThrow(AdNotFoundException::new);
         Comment comment = commentMapper.toCommentEntityFromCreateOrUpdateComment(createOrUpdateCommentDto);
 
-        //comment.setCreateAt(Instant.now().toEpochMilli());
         comment.setAd(ad);
         comment.setAuthor(user);
 
@@ -51,17 +51,23 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN') or " +
+            "@commentServiceImpl.findCommentById(#commentId).getAuthor().getEmail()==authentication.name")
     public void deleteCommentById(Integer commentId) {
         commentRepository.deleteById(commentId);
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN') or " +
+            "@commentServiceImpl.findCommentById(#commentId).getAuthor().getEmail()==authentication.name")
     public CommentDto updateComment(Integer adId,
                                     Integer commentId,
                                     CreateOrUpdateCommentDto createOrUpdateCommentDto,
                                     Authentication authentication) {
 
-        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
+
+        String email = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new).getAuthor().getEmail();
+        User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
         Ad ad = adRepository.findById(adId).orElseThrow(AdNotFoundException::new);
         Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
 
@@ -71,5 +77,9 @@ public class CommentServiceImpl implements CommentService {
         comment.setAuthor(user);
         commentRepository.save(comment);
         return commentMapper.toCommentDto(comment);
+    }
+
+    public Comment findCommentById(Integer id) {
+        return commentRepository.findById(id).orElseThrow(CommentNotFoundException::new);
     }
 }

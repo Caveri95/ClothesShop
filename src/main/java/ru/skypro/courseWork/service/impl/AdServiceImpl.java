@@ -1,7 +1,7 @@
 package ru.skypro.courseWork.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,8 +10,8 @@ import ru.skypro.courseWork.dto.CreateOrUpdateAdDto;
 import ru.skypro.courseWork.dto.ExtendedAdDto;
 import ru.skypro.courseWork.entity.Ad;
 import ru.skypro.courseWork.entity.User;
-import ru.skypro.courseWork.exception.AdNotFoundException;
-import ru.skypro.courseWork.exception.UserNotFoundException;
+import ru.skypro.courseWork.exception.notFoundException.AdNotFoundException;
+import ru.skypro.courseWork.exception.notFoundException.UserNotFoundException;
 import ru.skypro.courseWork.mapper.AdMapper;
 import ru.skypro.courseWork.repository.AdRepository;
 import ru.skypro.courseWork.repository.CommentRepository;
@@ -56,6 +56,7 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN') or @adServiceImpl.findAdById(#id).getAuthor().getEmail()==authentication.name")
     public void updateImage(Integer id, MultipartFile image) throws IOException {
 
         Ad ad = findAdById(id);
@@ -78,6 +79,7 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN') or @adServiceImpl.findAdById(#id).getAuthor().getEmail()==authentication.name")
     public void deleteById(Integer id) {
 
         Ad ad = findAdById(id);
@@ -88,9 +90,11 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN') or @adServiceImpl.findAdById(#id).getAuthor().getEmail()==authentication.name")
     public AdDto updateAd(Integer id, CreateOrUpdateAdDto createOrUpdateAdDto) {
 
         Ad ad = findAdById(id);
+
         ad.setDescription(createOrUpdateAdDto.getDescription());
         ad.setTitle(createOrUpdateAdDto.getTitle());
         ad.setPrice(createOrUpdateAdDto.getPrice());
@@ -99,7 +103,7 @@ public class AdServiceImpl implements AdService {
         return adMapper.toAdDto(ad);
     }
 
-    private Ad findAdById(Integer id) {
+    public Ad findAdById(Integer id) {
         return adRepository.findById(id).orElseThrow(AdNotFoundException::new);
     }
 }

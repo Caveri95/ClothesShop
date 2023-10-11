@@ -5,7 +5,6 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.courseWork.dto.AdDto;
 import ru.skypro.courseWork.dto.CreateOrUpdateAdDto;
 import ru.skypro.courseWork.dto.ExtendedAdDto;
-import ru.skypro.courseWork.entity.Ad;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,4 +23,5 @@ public interface AdService {
     void deleteById(Integer id);
 
     AdDto updateAd(Integer id, CreateOrUpdateAdDto createOrUpdateAdDto);
+
 }
