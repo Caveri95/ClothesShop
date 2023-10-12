@@ -4,7 +4,11 @@ import lombok.Data;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-
+/**
+ * Класс, представляющий сущность изображений в приложении.
+ * Соответствует таблице "image" в базе данных и используется
+ * для хранения изображений пользователей и объявлений.
+ */
 @Data
 @Entity
 public class Image {

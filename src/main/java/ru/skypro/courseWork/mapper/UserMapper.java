@@ -13,7 +13,10 @@ import ru.skypro.courseWork.dto.UserDto;
 import ru.skypro.courseWork.entity.Image;
 import ru.skypro.courseWork.entity.User;
 import ru.skypro.courseWork.repository.ImageRepository;
-
+/**
+ * Класс {@code UserMapper} является компонентом, отвечающим за преобразование сущностей пользователей (User) и DTO
+ * (Data Transfer Objects) в различные форматы и обратно.
+ */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserMapper {
 

@@ -3,7 +3,11 @@ package ru.skypro.courseWork.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-
+/**
+ * Класс, представляющий сущность комментариев в приложении.
+ * Соответствует таблице "comment" в базе данных и используется
+ * для хранения информации о комментариях пользователей.
+ */
 @Data
 @Entity
 public class Comment {

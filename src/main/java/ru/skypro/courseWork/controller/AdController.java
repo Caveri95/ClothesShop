@@ -20,7 +20,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
-
+/**
+ * Класс-контроллер для обработки запросов, связанных с объявлениями.
+ */
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +33,12 @@ public class AdController {
     private final AdService adService;
     private final ImageService imageService;
 
+
+    /**
+     * Получение всех объявлений.
+     *
+     * @return ответ в виде массива с объявлениями в формате JSON и кодом состояния HTTP 200 (OK).
+     */
     @GetMapping
     @Operation(summary = "Получение всех объявлений", responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = {
@@ -42,6 +50,16 @@ public class AdController {
         return ResponseEntity.ok(new AdsDto(adsDto.size(), adsDto));
     }
 
+    /**
+     * Добавление нового объявления.
+     *
+     * @param properties     объект класса {@link CreateOrUpdateAdDto},
+     *                       содержащий необходимую информацию о создаваемом объявлении.
+     * @param image          файл для установки изображения объявления.
+     * @param authentication объект аутентификации, представляющий текущего пользователя.
+     * @return ответ с созданным объявлением в формате JSON и кодом состояния HTTP 201 (Created).<br>
+     * Если пользователь не авторизован - код состояния HTTP 401 (Unauthorized).
+     */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Добавление объявления", responses = {
             @ApiResponse(responseCode = "201", description = "Created", content = {
@@ -54,6 +72,14 @@ public class AdController {
         return ResponseEntity.ok(adService.createAd(properties, image, authentication));
     }
 
+    /**
+     * Получение информации об объявлении по его идентификатору.
+     *
+     * @param id идентификатор объявления.
+     * @return ответ с информацией об объявлении в формате JSON и кодом состояния HTTP 200 (OK).<br>
+     * Если пользователь не авторизован - код состояния HTTP 401 (Unauthorized).<br>
+     * Если объявление не найдено - код состояния HTTP 404 (Not Found).
+     */
     @GetMapping("/{id}")
     @Operation(summary = "Получение информации об объявлении", responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = {
@@ -65,6 +91,15 @@ public class AdController {
         return ResponseEntity.ok(adService.getAdFullInfo(id));
     }
 
+    /**
+     * Удаление объявления по его идентификатору.
+     *
+     * @param id идентификатор объявления.
+     * @return ответ с кодом состояния HTTP 200 (OK) после успешного удаления.<br>
+     * Если пользователь не авторизован - код состояния HTTP 401 (Unauthorized).<br>
+     * Если запрос недопустим - код состояния HTTP 403 (Forbidden).<br>
+     * Если объявление не найдено - код состояния HTTP 404 (Not Found).
+     */
     @DeleteMapping("/{id}")
     @Operation(summary = "Удаление объявления", responses = {
             @ApiResponse(responseCode = "204", description = "No Content"),
@@ -77,6 +112,16 @@ public class AdController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Обновление информации объявления по его идентификатору.
+     *
+     * @param id                  идентификатор объявления.
+     * @param createOrUpdateAdDto обновленные данные объявления.
+     * @return ответ с обновленным объявлением в формате JSON и кодом состояния HTTP 200 (OK).<br>
+     * Если пользователь не авторизован - код состояния HTTP 401 (Unauthorized).<br>
+     * Если запрос недопустим - код состояния HTTP 403 (Forbidden).<br>
+     * Если объявление не найдено - код состояния HTTP 404 (Not Found).
+     */
     @PatchMapping("/{id}")
     @Operation(summary = "Обновление информации об объявлении", responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = {
@@ -89,6 +134,13 @@ public class AdController {
         return ResponseEntity.ok(adService.updateAd(id, createOrUpdateAdDto));
     }
 
+    /**
+     * Получение объявлений текущего пользователем.
+     *
+     * @param authentication объект аутентификации, представляющий текущего пользователя.
+     * @return ответ с массивом объявлений в формате JSON и кодом состояния HTTP 200 (OK).
+     * Если пользователь не авторизован - код состояния HTTP 401 (Unauthorized).
+     */
     @GetMapping("/me")
     @Operation(summary = "Получение объявлений авторизованного пользователя", responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = {
@@ -100,6 +152,16 @@ public class AdController {
         return ResponseEntity.ok(new AdsDto(adsDto.size(), adsDto));
     }
 
+    /**
+     * Обновление изображения объявления.
+     *
+     * @param id    идентификатор объявления.
+     * @param image файл изображения.
+     * @return ответ с обновленным объявлением в формате JSON и кодом состояния HTTP 200 (OK).<br>
+     * Если пользователь не авторизован - код состояния HTTP 401 (Unauthorized).<br>
+     * Если запрос недопустим - код состояния HTTP 403 (Forbidden).<br>
+     * Если объявление не найдено - код состояния HTTP 404 (Not Found).
+     */
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Обновление картинки объявления", responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = {
@@ -113,8 +175,17 @@ public class AdController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Получение изображения объявления по его идентификатору изображения.
+     *
+     * @param id идентификатор изображения пользователя.
+     * @return массив байтов с изображением и код состояния HTTP 200 (OK).
+     */
     @GetMapping("/image/{id}")
-    public ResponseEntity<byte[]> getImage(@PathVariable int id){
+    @Operation(summary = "Получение изображения объявления", responses = {
+            @ApiResponse(responseCode = "200", description = "OK")
+    })
+    public ResponseEntity<byte[]> getImage(@PathVariable int id) {
         return ResponseEntity.ok(imageService.getImage(id));
     }
 }
