@@ -10,7 +10,10 @@ import ru.skypro.courseWork.entity.User;
 
 import java.time.Instant;
 import java.util.List;
-
+/**
+ * Класс {@code CommentMapper} является компонентом, отвечающим за преобразование сущностей комментарий (Comment) и DTO
+ * (Data Transfer Objects) в различные форматы и обратно.
+ */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, imports = Instant.class)
 public interface CommentMapper {
 

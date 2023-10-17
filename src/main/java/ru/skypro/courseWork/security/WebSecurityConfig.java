@@ -11,6 +11,9 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+/**
+ * Конфигурационный класс для настройки безопасности веб-приложения.
+ */
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class WebSecurityConfig {
@@ -25,6 +28,13 @@ public class WebSecurityConfig {
             "/users/image/**"
     };
 
+    /**
+     * Создание фильтра, состоящего из цепочек безопасности для настройки правил авторизации и аутентификации HTTP-запросов.
+     *
+     * @param http Объект {@code HttpSecurity} для настройки безопасности.
+     * @return фильтр цепочки безопасности с настроенными правилами.
+     * @throws Exception в случае ошибки при настройке безопасности.
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf()
@@ -44,6 +54,11 @@ public class WebSecurityConfig {
         return http.build();
     }
 
+    /**
+     * Создание и настройка бина для шифрования паролей с использованием {@code BCryptPasswordEncoder}.
+     *
+     * @return Объект {@code PasswordEncoder} для шифрования паролей.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

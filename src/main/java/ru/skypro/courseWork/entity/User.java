@@ -4,7 +4,11 @@ import lombok.Data;
 import ru.skypro.courseWork.dto.Role;
 
 import javax.persistence.*;
-
+/**
+ * Класс, представляющий сущность пользователя в приложении.
+ * Соответствует таблице "users" в базе данных и используется
+ * для хранения информации о пользователях.
+ */
 @Data
 @Entity
 @Table(name = "users")

@@ -11,7 +11,9 @@ import ru.skypro.courseWork.repository.UserRepository;
 import ru.skypro.courseWork.security.service.SecurityUtils;
 
 import javax.transaction.Transactional;
-
+/**
+ * Реализация сервиса для обновления пароля пользователя
+ */
 @Service
 @RequiredArgsConstructor
 public class SecurityUtilsImpl implements SecurityUtils {
@@ -19,7 +21,11 @@ public class SecurityUtilsImpl implements SecurityUtils {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-
+    /**
+     * Обновление пароля авторизованного пользователя
+     * @param newPasswordDto объект, содержащий в себе новый пароль от пользователя.
+     * @param authentication объект аутентификации, представляющий текущего пользователя.
+     */
     @Override
     @Transactional
     public void updatePassword(NewPasswordDto newPasswordDto, Authentication authentication) {

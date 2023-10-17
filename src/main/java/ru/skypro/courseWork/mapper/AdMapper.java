@@ -15,6 +15,10 @@ import ru.skypro.courseWork.entity.User;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Класс {@code AdMapper} является компонентом, отвечающим за преобразование сущностей объявлений (Ad) и DTO
+ * (Data Transfer Objects) в различные форматы и обратно.
+ */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface AdMapper {
 

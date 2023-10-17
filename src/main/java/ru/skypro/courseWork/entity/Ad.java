@@ -3,7 +3,11 @@ package ru.skypro.courseWork.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-
+/**
+ * Класс, представляющий сущность объявления в приложении.
+ * Соответствует таблице "ad" в базе данных и используется
+ * для хранения информации об объявлениях пользователей.
+ */
 @Data
 @Entity
 public class Ad {

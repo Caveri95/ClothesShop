@@ -14,7 +14,9 @@ import ru.skypro.courseWork.repository.UserRepository;
 import ru.skypro.courseWork.security.service.AuthService;
 
 import javax.transaction.Transactional;
-
+/**
+ * Реализация сервиса для аутентификации и регистрации пользователей.
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {

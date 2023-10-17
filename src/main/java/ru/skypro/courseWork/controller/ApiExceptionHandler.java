@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.skypro.courseWork.exception.forbiddenException.ForbiddenException;
 import ru.skypro.courseWork.exception.invalidParameters.InvalidRegistrationParameters;
 import ru.skypro.courseWork.exception.notFoundException.NotFoundException;
-
+/**
+ * Вспомогательный класс для обработки исключений, возникающих при работе контроллеров.
+ */
 @RestControllerAdvice
 public class ApiExceptionHandler {
 

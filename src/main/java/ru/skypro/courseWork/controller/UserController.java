@@ -21,7 +21,9 @@ import ru.skypro.courseWork.service.UserService;
 
 import javax.validation.Valid;
 import java.io.IOException;
-
+/**
+ * Класс-контроллер для обработки запросов, связанных с пользователями.
+ */
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
@@ -33,6 +35,15 @@ public class UserController {
     private final ImageService imageService;
     private final SecurityUtils securityUtils;
 
+    /**
+     * Обновление пароля пользователя.
+     *
+     * @param newPasswordDto новый пароль пользователя.
+     * @param authentication объект аутентификации, представляющий текущего пользователя.
+     * @return ответ с кодом состояния HTTP 200 (OK) после успешного обновления пароля.<br>
+     * Если пользователь не авторизован - код состояния HTTP 401 (Unauthorized).<br>
+     * Если объявление не найдено - код состояния HTTP 403 (Forbidden).
+     */
     @PostMapping("/set_password")
     @Operation(summary = "Обновление пароля", responses = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -45,6 +56,12 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Получение информации об авторизованном пользователе.
+     *
+     * @return ответ с информацией о пользователе и кодом состояния HTTP 200 (OK).<br>
+     * Если пользователь не авторизован - код состояния HTTP 401 (Unauthorized).
+     */
     @GetMapping("/me")
     @Operation(summary = "Получение информации об авторизованном пользователе", responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = {
@@ -55,6 +72,14 @@ public class UserController {
         return ResponseEntity.ok(userService.getMyInfo(authentication));
     }
 
+    /**
+     * Обновление информации об авторизованном пользователе.
+     *
+     * @param updateUserDto  обновленные данные пользователя.
+     * @param authentication объект аутентификации, представляющий текущего пользователя.
+     * @return ответ с обновленной информацией о пользователе и кодом состояния HTTP 200 (OK).<br>
+     * Если пользователь не авторизован - код состояния HTTP 401 (Unauthorized).
+     */
     @PatchMapping("/me")
     @Operation(summary = "Обновление информации об авторизованном пользователе", responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = {
@@ -66,6 +91,14 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(updateUserDto, authentication));
     }
 
+    /**
+     * Обновление аватара авторизованного пользователя.
+     *
+     * @param image          файл для установки изображения пользователя.
+     * @param authentication объект аутентификации, представляющий текущего пользователя.
+     * @return Ответ с кодом состояния HTTP 200 (OK) после успешного обновления аватара.<br>
+     * Если пользователь не авторизован - код состояния HTTP 401 (Unauthorized).
+     */
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Обновление аватара авторизованного пользователя", responses = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -76,7 +109,16 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Получение изображения пользователя по его идентификатору изображения.
+     *
+     * @param id идентификатор изображения пользователя.
+     * @return массив байтов с изображением и код состояния HTTP 200 (OK).
+     */
     @GetMapping("/image/{id}")
+    @Operation(summary = "Получение изображения пользователя", responses = {
+            @ApiResponse(responseCode = "200", description = "OK")
+    })
     public ResponseEntity<byte[]> getImage(@PathVariable int id) {
         return ResponseEntity.ok(imageService.getImage(id));
     }

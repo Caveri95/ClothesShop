@@ -7,6 +7,9 @@ import ru.skypro.courseWork.entity.Comment;
 
 import java.nio.file.AccessDeniedException;
 
+/**
+ * Сервис для обновления пароля пользователя
+ */
 public interface SecurityUtils {
 
     void updatePassword(NewPasswordDto newPasswordDto, Authentication authentication);
