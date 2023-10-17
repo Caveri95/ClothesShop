@@ -23,8 +23,15 @@
 ### Связь между сущностями в таблицах:
 ![image](https://github.com/Caveri95/ClothesShop/assets/115732440/0a87e602-df43-45cd-8c4b-e323411eae19)
 
-
-
+### Запуск приложения:
+- клонировать проект в среду разработки;
+- настроить подключение к базе данных в файле application.properties;
+- установить приложение Docker и запустить его;
+- скачать Docker образ с помощью команды docker pull ghcr.io/bizinmitya/front-react-avito:latest
+- запустить Docker образ с помощью команды docker run -p 3000:3000 ghcr.io/bizinmitya/front-react-avito:latest
+- Запустить метод main в файле HomeworkApplication.java
+  
+После этого вам будет доступен сайт http://localhost:3000 и Swagger UI http://localhost:8080/swagger-ui/index.html#.
 
 ### Команда проекта
 - Юрий Брылев, разработчик;
