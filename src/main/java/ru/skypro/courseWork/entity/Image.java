@@ -19,6 +19,6 @@ public class Image {
     private Integer id;
 
     @Lob
-    //@Column(columnDefinition = "oid", nullable = false)
+    //@Column(columnDefinition = "oid", nullable = false)  потому что Н2 ругается в тестах
     private byte[] data;
 }
