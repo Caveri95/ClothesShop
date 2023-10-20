@@ -16,13 +16,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ru.skypro.courseWork.dto.CreateOrUpdateAdDto;
-import ru.skypro.courseWork.dto.Role;
 import ru.skypro.courseWork.entity.Ad;
-import ru.skypro.courseWork.entity.Image;
 import ru.skypro.courseWork.entity.User;
 import ru.skypro.courseWork.repository.AdRepository;
 import ru.skypro.courseWork.repository.ImageRepository;
 import ru.skypro.courseWork.repository.UserRepository;
+import ru.skypro.courseWork.util.TestUtil;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -45,6 +44,8 @@ class AdControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private WebApplicationContext context;
+    @Autowired
+    private TestUtil testUtil;
 
     @BeforeEach
     public void setup() {
@@ -67,7 +68,7 @@ class AdControllerTest {
     @WithMockUser(value = "test@gmail.com")
     void shouldReturnAdWhenAddAdCalled() throws Exception {
 
-        User user = creatTestUser();
+        User user = testUtil.createTestUser();
 
         CreateOrUpdateAdDto createOrUpdateAdDto = new CreateOrUpdateAdDto(
                 "titletitle",
@@ -95,7 +96,7 @@ class AdControllerTest {
                         .file(image))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.author").value(user.getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.image").value("/ads/image/1")) //Здесь не факт, что 1 будет
+                //.andExpect(MockMvcResultMatchers.jsonPath("$.image").value("/ads/image/1")) //Здесь не факт, что 1 будет
                 .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(1234))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("titletitle"))
                 .andExpect(status().isOk());
@@ -107,8 +108,7 @@ class AdControllerTest {
     @WithMockUser
     void shouldReturnAdInfo() throws Exception {
 
-        Ad ad = createTestAd();
-
+        Ad ad = testUtil.createTestAd();
         mockMvc.perform(get("/ads/{id}", ad.getPk())
                         .content(objectMapper.writeValueAsString(ad))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -130,7 +130,7 @@ class AdControllerTest {
     @WithMockUser(value = "test@gmail.com")
     void shouldReturnOkWhenDeleteAdCalled() throws Exception {
 
-        Ad ad = createTestAd();
+        Ad ad = testUtil.createTestAd();
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/ads/{id}", ad.getPk()))
                 .andExpect(status().isOk());
@@ -142,7 +142,7 @@ class AdControllerTest {
     @WithMockUser
     void shouldReturnCollectionOfAds() throws Exception {
 
-        createTestAd();
+        testUtil.createTestAd();
 
         mockMvc.perform(MockMvcRequestBuilders.get("/ads"))
                 .andDo(MockMvcResultHandlers.print())
@@ -156,7 +156,7 @@ class AdControllerTest {
     @WithMockUser(value = "test@gmail.com")
     void shouldReturnUpdateInformationAboutAd() throws Exception {
 
-        Ad ad = createTestAd();
+        Ad ad = testUtil.createTestAd();
 
         CreateOrUpdateAdDto createOrUpdateAdDto = new CreateOrUpdateAdDto(
                 "UpdateTitle",
@@ -180,7 +180,7 @@ class AdControllerTest {
     @WithMockUser(value = "test@gmail.com")
     void shouldReturnCollectionOfMyAds() throws Exception {
 
-        createTestAd();
+        testUtil.createTestAd();
 
         mockMvc.perform(MockMvcRequestBuilders.get("/ads/me"))
                 .andDo(MockMvcResultHandlers.print())
@@ -194,7 +194,7 @@ class AdControllerTest {
     @WithMockUser(value = "test@gmail.com")
     void shouldReturnOk() throws Exception {
 
-        Ad ad = createTestAd();
+        Ad ad = testUtil.createTestAd();
 
         MockMultipartFile image
                 = new MockMultipartFile(
@@ -208,7 +208,7 @@ class AdControllerTest {
                 MockMvcRequestBuilders.multipart("/ads/{id}/image", ad.getPk());
 
         builder.with(request -> {
-            request.setMethod("PATCH"); //потому что с patch не хочет работать
+            request.setMethod("PATCH"); //потому что если есть мультипартовый запрос, то patch не хочет работать
             return request;
         });
 
@@ -224,56 +224,13 @@ class AdControllerTest {
     @WithMockUser
     void shouldReturnArrayOfByteImage() throws Exception {
 
-        Ad ad = createTestAd();
+        Ad ad = testUtil.createTestAd();
 
-        mockMvc.perform(get("/ads/image/{id}", ad.getImage().getId())
-                        .content(objectMapper.writeValueAsString(ad))
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/ads/image/{id}", ad.getImage().getId()))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value("adImage"))
                 .andExpect(status().isOk());
     }
 
-    private User creatTestUser() {
-        User user = new User();
-        user.setEmail("test@gmail.com");
-        user.setPassword("$2a$10$j4g2V3qsGCRffvV/bYpE6uJrhEFFyCSKwRFnSK5QXdX8z88Ao6JEu");
-        user.setFirstName("firstName");
-        user.setLastName("lastName");
-        user.setPhone("+79000000000");
-        user.setRole(Role.USER);
-        userRepository.save(user);
-        return user;
-    }
 
-    private Ad createTestAd() {
-
-        Image imageForAd = new Image();
-        imageForAd.setData("adImage".getBytes());
-        imageRepository.save(imageForAd);
-
-        Image imageForUser = new Image();
-        imageForUser.setData("userImage".getBytes());
-        imageRepository.save(imageForUser);
-
-        User user = new User();
-        user.setEmail("test@gmail.com");
-        user.setPassword("$2a$10$j4g2V3qsGCRffvV/bYpE6uJrhEFFyCSKwRFnSK5QXdX8z88Ao6JEu");
-        user.setFirstName("firstName");
-        user.setLastName("lastName");
-        user.setPhone("+79000000000");
-        user.setRole(Role.USER);
-        user.setImage(imageForUser);
-        userRepository.save(user);
-
-        Ad ad = new Ad();
-        ad.setAuthor(user);
-        ad.setImage(imageForAd);
-        ad.setPrice(1234);
-        ad.setDescription("description");
-        ad.setTitle("titletitle");
-        adRepository.save(ad);
-
-        return ad;
-    }
 }
