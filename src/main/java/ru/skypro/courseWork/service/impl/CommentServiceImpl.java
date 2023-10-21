@@ -72,7 +72,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
 
         comment.setText(createOrUpdateCommentDto.getText());
-        comment.setCreateAt(Instant.now().toEpochMilli());
+        comment.setCreatedAt(Instant.now().toEpochMilli());
         comment.setAd(ad);
         comment.setAuthor(user);
         commentRepository.save(comment);

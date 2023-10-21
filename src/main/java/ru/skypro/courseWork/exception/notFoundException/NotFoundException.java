@@ -2,7 +2,7 @@ package ru.skypro.courseWork.exception.notFoundException;
 
 /**
  * Класс {@code NotFoundException} представляет исключение, которое выбрасывается при попытке
- * найти объект в базе данных, но объект не был обнаружен.*
+ * найти объект в базе данных, но объект не был обнаружен.
  *
  * @see RuntimeException
  */

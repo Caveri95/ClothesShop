@@ -23,9 +23,6 @@ public interface UserMapper {
     @Mapping(target = "image", source = "image", qualifiedByName = "imageToPathString")
     UserDto toUserDto(User user);
 
-    @Mapping(target = "image", source = "image", ignore = true)
-    User toUserEntity(UserDto userDto);
-
     @Mapping(target = "email", source = "username")
     User toUserEntity(RegisterDto registerDto);
 
@@ -38,6 +35,4 @@ public interface UserMapper {
         }
         return "/users/image/" + image.getId();
     }
-
-
 }

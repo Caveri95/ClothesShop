@@ -25,7 +25,7 @@ public class CommentDto {
     /**
      * Время создания комментария в миллисекундах с 00:00 1 января 1970.
      */
-    private Long createAt;
+    private Long createdAt;
 
     /**
      * Идентификатор комментария.

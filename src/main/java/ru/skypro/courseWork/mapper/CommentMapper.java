@@ -18,15 +18,13 @@ import java.util.List;
 public interface CommentMapper {
 
     @Mapping(target = "author", source = "author", qualifiedByName = "authorToInteger")
+    @Mapping(target = "authorFirstName", source = "author", qualifiedByName = "authorFirstNameFromAuthor")
     @Mapping(target = "authorImage", source = "author", qualifiedByName = "authorImageToString")
     CommentDto toCommentDto(Comment comment);
 
-    @Mapping(target = "author", ignore = true)
-    Comment toCommentEntity(CommentDto commentDto);
-
     List<CommentDto> toCommentsDto(List<Comment> comments);
 
-    @Mapping(target = "createAt", expression = "java(Instant.now().toEpochMilli())")
+    @Mapping(target = "createdAt", expression = "java(Instant.now().toEpochMilli())")
     Comment toCommentEntityFromCreateOrUpdateComment(CreateOrUpdateCommentDto createOrUpdateCommentDto);
 
     @Named("authorImageToString")
@@ -40,5 +38,10 @@ public interface CommentMapper {
     @Named("authorToInteger")
     default Integer authorToInteger(User user) {
         return user.getId();
+    }
+
+    @Named("authorFirstNameFromAuthor")
+    default String authorFirstNameFromAuthor(User author) {
+        return author.getFirstName();
     }
 }

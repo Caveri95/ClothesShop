@@ -21,7 +21,7 @@ public class Comment {
     private User author;
 
     @Column(nullable = false)
-    private Long createAt;
+    private Long createdAt;
 
     @Column(nullable = false)
     private String text;
