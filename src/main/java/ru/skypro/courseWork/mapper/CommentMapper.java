@@ -24,7 +24,7 @@ public interface CommentMapper {
 
     List<CommentDto> toCommentsDto(List<Comment> comments);
 
-    @Mapping(target = "createAt", expression = "java(Instant.now().toEpochMilli())")
+    @Mapping(target = "createdAt", expression = "java(Instant.now().toEpochMilli())")
     Comment toCommentEntityFromCreateOrUpdateComment(CreateOrUpdateCommentDto createOrUpdateCommentDto);
 
     @Named("authorImageToString")

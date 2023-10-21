@@ -71,7 +71,4 @@ class AuthorizationControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk());
     }
-
-
-
 }

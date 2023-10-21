@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
@@ -22,6 +23,7 @@ import ru.skypro.courseWork.repository.ImageRepository;
 import ru.skypro.courseWork.repository.UserRepository;
 import ru.skypro.courseWork.util.TestUtil;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,6 +45,8 @@ public class UserControllerTest {
     private WebApplicationContext context;
     @Autowired
     private TestUtil testUtil;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     public void setup() {
@@ -63,7 +67,7 @@ public class UserControllerTest {
     @WithMockUser(value = "test@gmail.com")
     void shouldReturnOk() throws Exception {
 
-        testUtil.createTestUser();
+        User user = testUtil.createTestUser();
 
         NewPasswordDto newPasswordDto = new NewPasswordDto();
         newPasswordDto.setCurrentPassword("password"); //тут текущий пароль незакодированный
@@ -74,7 +78,10 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk());
+
+        assertTrue(passwordEncoder.matches("newPassword", userRepository.findByEmail(user.getEmail()).get().getPassword()));
     }
+
 
     @Test
     @DisplayName("Получение информации об авторизованном пользователе")
@@ -89,7 +96,7 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("firstName"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("lastName"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.phone").value("+79000000000"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.role").value("USER"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.role").value(user.getRole().name()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.image").value("/users/image/"
                         + user.getImage().getId()))
                 .andExpect(status().isOk());
@@ -122,7 +129,7 @@ public class UserControllerTest {
     @WithMockUser(value = "test@gmail.com")
     void shouldReturnOkWhenUpdateAvatarCalled() throws Exception {
 
-        testUtil.createTestUser();
+        User user = testUtil.createTestUser();
 
         MockMultipartFile image
                 = new MockMultipartFile(
@@ -144,6 +151,8 @@ public class UserControllerTest {
                         .file(image))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk());
+
+        assertArrayEquals(image.getBytes(), userRepository.findById(user.getId()).get().getImage().getData());
     }
 
     @Test

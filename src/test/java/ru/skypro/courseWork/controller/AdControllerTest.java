@@ -22,14 +22,15 @@ import ru.skypro.courseWork.repository.AdRepository;
 import ru.skypro.courseWork.repository.ImageRepository;
 import ru.skypro.courseWork.repository.UserRepository;
 import ru.skypro.courseWork.util.TestUtil;
+import org.assertj.core.api.Assertions;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class) //БД заполняется и id меняется, даже после очистки репозитория
 class AdControllerTest {
 
     @Autowired
@@ -64,7 +65,6 @@ class AdControllerTest {
 
     @Test
     @DisplayName("Добавление объявления")
-    @Order(1)
     @WithMockUser(value = "test@gmail.com")
     void shouldReturnAdWhenAddAdCalled() throws Exception {
 
@@ -96,7 +96,6 @@ class AdControllerTest {
                         .file(image))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.author").value(user.getId()))
-                //.andExpect(MockMvcResultMatchers.jsonPath("$.image").value("/ads/image/1")) //Здесь не факт, что 1 будет
                 .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(1234))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("titletitle"))
                 .andExpect(status().isOk());
@@ -104,7 +103,6 @@ class AdControllerTest {
 
     @Test
     @DisplayName("Получение информации об объявлении")
-    @Order(2)
     @WithMockUser
     void shouldReturnAdInfo() throws Exception {
 
@@ -126,7 +124,6 @@ class AdControllerTest {
 
     @Test
     @DisplayName("Удаление объявления")
-    @Order(3)
     @WithMockUser(value = "test@gmail.com")
     void shouldReturnOkWhenDeleteAdCalled() throws Exception {
 
@@ -134,25 +131,32 @@ class AdControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/ads/{id}", ad.getPk()))
                 .andExpect(status().isOk());
+
+        assertFalse(adRepository.findById(ad.getPk()).isPresent());
+
+
     }
 
     @Test
     @DisplayName("Получение всех объявлений")
-    @Order(4)
     @WithMockUser
     void shouldReturnCollectionOfAds() throws Exception {
 
-        testUtil.createTestAd();
+        Ad ad = testUtil.createTestAd();
 
         mockMvc.perform(MockMvcRequestBuilders.get("/ads"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.count").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].author").value(ad.getAuthor().getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].image").value("/ads/image/" +
+                        ad.getImage().getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].price").value(1234))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].title").value("titletitle"))
                 .andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("Обновление информации об объявлении")
-    @Order(5)
     @WithMockUser(value = "test@gmail.com")
     void shouldReturnUpdateInformationAboutAd() throws Exception {
 
@@ -176,21 +180,25 @@ class AdControllerTest {
 
     @Test
     @DisplayName("Получение объявлений авторизованного пользователя")
-    @Order(6)
     @WithMockUser(value = "test@gmail.com")
     void shouldReturnCollectionOfMyAds() throws Exception {
 
-        testUtil.createTestAd();
+        Ad ad = testUtil.createTestAd();
 
         mockMvc.perform(MockMvcRequestBuilders.get("/ads/me"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.count").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].author").value(ad.getAuthor().getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].image").value("/ads/image/" +
+                        ad.getImage().getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].price").value(1234))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].title").value("titletitle"))
+
                 .andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("Обновление картинки объявления")
-    @Order(7)
     @WithMockUser(value = "test@gmail.com")
     void shouldReturnOk() throws Exception {
 
@@ -216,11 +224,14 @@ class AdControllerTest {
                         .file(image))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk());
+
+        Ad updateAd = adRepository.findById(ad.getPk()).get();
+
+        assertArrayEquals(image.getBytes(), imageRepository.findById(updateAd.getImage().getId()).get().getData());
     }
 
     @Test
     @DisplayName("Получение изображения объявления")
-    @Order(8)
     @WithMockUser
     void shouldReturnArrayOfByteImage() throws Exception {
 
@@ -231,6 +242,4 @@ class AdControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value("adImage"))
                 .andExpect(status().isOk());
     }
-
-
 }

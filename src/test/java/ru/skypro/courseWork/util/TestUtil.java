@@ -100,7 +100,7 @@ public class TestUtil {
         adRepository.save(ad);
 
         Comment comment = new Comment();
-        comment.setCreateAt(System.currentTimeMillis());
+        comment.setCreatedAt(System.currentTimeMillis());
         comment.setAuthor(user);
         comment.setText("TextComment");
         comment.setAd(ad);

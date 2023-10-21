@@ -1,6 +1,7 @@
 package ru.skypro.courseWork.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,6 +23,7 @@ import ru.skypro.courseWork.repository.ImageRepository;
 import ru.skypro.courseWork.repository.UserRepository;
 import ru.skypro.courseWork.util.TestUtil;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -72,10 +74,14 @@ class CommentControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/ads/{id}/comments", comment.getAd().getPk())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.count").value(1));
-        //Как обратиться к элементу массива? .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].author").value(1));
-        //чтобы пройтись по JSON результату
-
+                .andExpect(MockMvcResultMatchers.jsonPath("$.count").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].author").value(comment.getAuthor().getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].authorImage").value("/users/image/" +
+                        comment.getAuthor().getImage().getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].authorFirstName").value("firstName"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].createdAt", Matchers.lessThan(System.currentTimeMillis())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].text").value("TextComment"))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -96,9 +102,8 @@ class CommentControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.authorImage").value("/users/image/"
                         + ad.getAuthor().getImage().getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.authorFirstName").value("firstName"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.createdAt", Matchers.lessThan(System.currentTimeMillis())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.text").value("SomeCommentText"))
-                //.andExpect(MockMvcResultMatchers.jsonPath("$.createAt").value(1697746992668L)) время ставится
-                // в маппере,тут не подгадать
                 .andExpect(status().isOk());
     }
 
@@ -113,6 +118,8 @@ class CommentControllerTest {
                         comment.getAd().getPk(),
                         comment.getPk()))
                 .andExpect(status().isOk());
+
+        assertFalse(commentRepository.findById(comment.getPk()).isPresent());
     }
 
     @Test
@@ -135,14 +142,8 @@ class CommentControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.authorImage").value("/users/image/"
                         + comment.getAuthor().getImage().getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.authorFirstName").value("firstName"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.createdAt", Matchers.lessThan(System.currentTimeMillis())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.text").value("UpdateComment"))
                 .andExpect(status().isOk());
-
-
     }
-
-
-
-
-
 }
