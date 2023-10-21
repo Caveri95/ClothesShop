@@ -1,6 +1,9 @@
 package ru.skypro.courseWork.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -16,15 +19,18 @@ import ru.skypro.courseWork.service.UserService;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
 @Transactional
+@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final ImageService imageService;
+    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     @Override
     public UserDto getMyInfo(Authentication authentication) {
         return userMapper.toUserDto(findUserByEmail(authentication));
@@ -38,6 +44,7 @@ public class UserServiceImpl implements UserService {
         user.setLastName(updateUserDto.getLastName());
         user.setPhone(updateUserDto.getPhone());
         userRepository.save(user);
+        logger.debug("Info about user with id - " + user.getId() + " was update");
         return userMapper.toUpdateUserDto(user);
     }
 
@@ -47,9 +54,17 @@ public class UserServiceImpl implements UserService {
         User user = findUserByEmail(authentication);
         user.setImage(imageService.upload(image));
         userRepository.save(user);
+        logger.debug("User avatar with id - " + user.getId() + " was update");
     }
 
     private User findUserByEmail(Authentication authentication) {
-        return userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
+        Optional<User> user = userRepository.findByEmail(authentication.getName());
+
+        if (user.isEmpty()) {
+            logger.error("User not found");
+            throw new UserNotFoundException();
+        } else {
+            return user.get();
+        }
     }
 }
