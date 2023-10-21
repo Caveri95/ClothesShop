@@ -67,7 +67,7 @@ class CommentControllerTest {
     @Test
     @DisplayName("Получение списка комментариев объявления")
     @WithMockUser(value = "test@gmail.com")
-    void shouldReturnCollectionOfComments() throws Exception {
+    void shouldReturnCollectionOfComments_WhenGetAllCommentsCalled() throws Exception {
 
         Comment comment = testUtil.createTestComment();
 
@@ -87,7 +87,7 @@ class CommentControllerTest {
     @Test
     @DisplayName("Добавление комментария к объявлению")
     @WithMockUser(value = "test@gmail.com")
-    void shouldReturnComment() throws Exception {
+    void shouldReturnComment_WhenCreateCommentCalled() throws Exception {
 
         CreateOrUpdateCommentDto createOrUpdateCommentDto = new CreateOrUpdateCommentDto();
         createOrUpdateCommentDto.setText("SomeCommentText");
@@ -110,7 +110,7 @@ class CommentControllerTest {
     @Test
     @DisplayName("Удаление комментария по его id")
     @WithMockUser(value = "test@gmail.com")
-    void shouldReturnOk() throws Exception {
+    void shouldReturnOk_WhenDeleteCommentCalled() throws Exception {
 
         Comment comment = testUtil.createTestComment();
 
@@ -125,7 +125,7 @@ class CommentControllerTest {
     @Test
     @DisplayName("Обновление комментария")
     @WithMockUser(value = "test@gmail.com")
-    void shouldReturnUpdateComment() throws Exception {
+    void shouldReturnUpdateComment_WhenUpdateCommentCalled() throws Exception {
 
         CreateOrUpdateCommentDto createOrUpdateCommentDto = new CreateOrUpdateCommentDto();
         createOrUpdateCommentDto.setText("UpdateComment");

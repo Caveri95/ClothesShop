@@ -65,7 +65,7 @@ public class UserControllerTest {
     @Test
     @DisplayName("Обновление пароля")
     @WithMockUser(value = "test@gmail.com")
-    void shouldReturnOk() throws Exception {
+    void shouldReturnOk_WhenPasswordUpdateCalled() throws Exception {
 
         User user = testUtil.createTestUser();
 
@@ -86,7 +86,7 @@ public class UserControllerTest {
     @Test
     @DisplayName("Получение информации об авторизованном пользователе")
     @WithMockUser(value = "test@gmail.com")
-    void shouldReturnInfoAboutAuthenticatedUser() throws Exception {
+    void shouldReturnInfoAboutAuthenticatedUser_WhenGetMyInfoCalled() throws Exception {
 
         User user = testUtil.createTestUser();
 
@@ -105,7 +105,7 @@ public class UserControllerTest {
     @Test
     @DisplayName("Обновление информации об авторизованном пользователе")
     @WithMockUser(value = "test@gmail.com")
-    void shouldReturnUpdateInfoAboutUser() throws Exception {
+    void shouldReturnUpdateInfoAboutUser_WhenUpdateMyInfoCalled() throws Exception {
 
         testUtil.createTestUser();
 
@@ -127,7 +127,7 @@ public class UserControllerTest {
     @Test
     @DisplayName("Обновление аватара авторизованного пользователя")
     @WithMockUser(value = "test@gmail.com")
-    void shouldReturnOkWhenUpdateAvatarCalled() throws Exception {
+    void shouldReturnOk_WhenUpdateAvatarCalled() throws Exception {
 
         User user = testUtil.createTestUser();
 
@@ -158,7 +158,7 @@ public class UserControllerTest {
     @Test
     @DisplayName("Получение изображения пользователя по его id")
     @WithMockUser
-    void shouldReturnArrayOfByteImage() throws Exception {
+    void shouldReturnArrayOfByteImage_WhenGetImageCalled() throws Exception {
 
         User user = testUtil.createTestUser();
 

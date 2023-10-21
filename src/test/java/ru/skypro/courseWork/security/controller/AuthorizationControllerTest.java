@@ -58,7 +58,7 @@ class AuthorizationControllerTest {
     @Test
     @DisplayName("Авторизация пользователя")
     @WithMockUser(value = "test@gmail.com")
-    void shouldReturnOkWhenAuthenticationPassed() throws Exception {
+    void shouldReturnOk_WhenAuthenticationPassed() throws Exception {
 
         testUtil.createTestUser();
         Login login = new Login();
