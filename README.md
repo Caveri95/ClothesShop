@@ -42,6 +42,7 @@
 - Spring Security;
 - Springdoc;
 - SpringBootTest;
+- Docker;
 - Maven;
 - Lombok;
 - PostgreSQL;
@@ -50,6 +51,7 @@
 - h2database for tests.
 
 ## Примечание
+- Функционал backend-части приложение разрабатывался под готовую OpenAPI спецификацию https://github.com/skygroundwater/OnlineResellingProject/blob/release/openapi.yaml
 - Приложение функционирует с помощью запросов с localhost:3000 к эндпоинтам на localhost:8080.
 
 ## Команда проекта
