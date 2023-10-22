@@ -2,8 +2,6 @@ package ru.skypro.courseWork.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -29,8 +27,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 @Slf4j
+@Transactional
 @RequiredArgsConstructor
 public class AdServiceImpl implements AdService {
 
@@ -40,8 +38,6 @@ public class AdServiceImpl implements AdService {
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
     private final CommentRepository commentRepository;
-    private final Logger logger = LoggerFactory.getLogger(AdServiceImpl.class);
-
 
     @Override
     public List<AdDto> getAllAds() {
@@ -57,7 +53,7 @@ public class AdServiceImpl implements AdService {
         ad.setImage(imageService.upload(image));
         ad.setAuthor(user);
         adRepository.save(ad);
-        logger.debug("Created ad " + ad);
+        log.debug("Created ad " + ad);
 
         return adMapper.toAdDto(ad);
     }
@@ -70,7 +66,7 @@ public class AdServiceImpl implements AdService {
         imageRepository.delete(ad.getImage());
         ad.setImage(imageService.upload(image));
         adRepository.save(ad);
-        logger.debug("Update image ad with id - " + id);
+        log.debug("Update image ad with id - {}", id);
     }
 
     @Override
@@ -96,7 +92,7 @@ public class AdServiceImpl implements AdService {
         adRepository.deleteById(id);
         imageRepository.deleteById(ad.getImage().getId());
 
-        logger.debug("ad with id - " + id + " was delete");
+        log.debug("ad with id - {} was delete", id);
     }
 
     @Override
@@ -110,7 +106,7 @@ public class AdServiceImpl implements AdService {
         ad.setPrice(createOrUpdateAdDto.getPrice());
         adRepository.save(ad);
 
-        logger.debug("ad with id - " + id + " was update");
+        log.debug("ad with id - {} was update", id);
 
         return adMapper.toAdDto(ad);
     }
@@ -120,7 +116,7 @@ public class AdServiceImpl implements AdService {
         Optional<Ad> ad = adRepository.findById(id);
 
         if (ad.isEmpty()) {
-            logger.error("Ad not found");
+            log.error("Ad not found");
             throw new AdNotFoundException();
         } else {
             return ad.get();

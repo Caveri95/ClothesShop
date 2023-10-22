@@ -2,8 +2,6 @@ package ru.skypro.courseWork.security.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,7 +13,6 @@ import ru.skypro.courseWork.exception.invalidParameters.InvalidUsernameException
 import ru.skypro.courseWork.mapper.UserMapper;
 import ru.skypro.courseWork.repository.UserRepository;
 import ru.skypro.courseWork.security.service.AuthService;
-import ru.skypro.courseWork.service.impl.AdServiceImpl;
 
 import javax.transaction.Transactional;
 /**
@@ -30,16 +27,16 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final SecurityUserService securityUserService;
     private final UserMapper userMapper;
-    private final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
 
     @Override
     @Transactional
     public boolean login(String username, String password) {
         UserDetails userDetails = securityUserService.loadUserByUsername(username);
         if (userRepository.findByEmail(username).isEmpty() || !encoder.matches(password, userDetails.getPassword())) {
+            log.info("Failed login attempt with username - {}", username);
             throw new InvalidLoginPasswordException();
         }
-        logger.debug("User with username - " + username + " was login");
+        log.debug("User with username - {} was login", username);
         return encoder.matches(password, userDetails.getPassword());
     }
 
@@ -59,7 +56,12 @@ public class AuthServiceImpl implements AuthService {
         }
 
         userRepository.save(user);
-        logger.debug("New user was created");
+
+        if (registerDto.getRole() == Role.ADMIN) {
+            log.info("New ADMIN was created with username - {}", registerDto.getUsername());
+        } else {
+            log.debug("New USER was created with username - {}", registerDto.getUsername());
+        }
         return true;
     }
 }

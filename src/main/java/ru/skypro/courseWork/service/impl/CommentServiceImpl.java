@@ -2,8 +2,6 @@ package ru.skypro.courseWork.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -27,8 +25,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 @Slf4j
+@Transactional
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
@@ -36,7 +34,6 @@ public class CommentServiceImpl implements CommentService {
     private final CommentMapper commentMapper;
     private final AdRepository adRepository;
     private final UserRepository userRepository;
-    private final Logger logger = LoggerFactory.getLogger(CommentServiceImpl.class);
     @Override
     public List<CommentDto> getCommentByIdAd(Integer id) {
         return commentMapper.toCommentsDto(commentRepository.findAllByAdPk(id));
@@ -53,7 +50,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setAuthor(user);
 
         commentRepository.save(comment);
-        logger.debug("Comment with id - " + id + " was created");
+        log.debug("Comment with id - {} was created", id);
         return commentMapper.toCommentDto(comment);
     }
 
@@ -62,7 +59,7 @@ public class CommentServiceImpl implements CommentService {
             "@commentServiceImpl.findCommentById(#commentId).getAuthor().getEmail()==authentication.name")
     public void deleteCommentById(Integer commentId) {
         commentRepository.deleteById(commentId);
-        logger.debug("Comment with id - " + commentId + " was deleted");
+        log.debug("Comment with id - {} was deleted", commentId);
     }
 
     @Override
@@ -85,7 +82,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setAuthor(user);
         commentRepository.save(comment);
 
-        logger.debug("Comment with id - " + commentId + " was updated in ad with id - " + adId);
+        log.debug("Comment with id - {} was updated in ad with id - {}", commentId, adId);
         return commentMapper.toCommentDto(comment);
     }
 
@@ -94,7 +91,7 @@ public class CommentServiceImpl implements CommentService {
         Optional<Comment> comment = commentRepository.findById(id);
 
         if (comment.isEmpty()) {
-            logger.error("Comment not found");
+            log.error("Comment not found");
             throw new CommentNotFoundException();
         } else {
             return comment.get();
