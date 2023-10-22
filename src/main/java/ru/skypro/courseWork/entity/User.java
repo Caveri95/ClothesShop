@@ -4,7 +4,11 @@ import lombok.Data;
 import ru.skypro.courseWork.dto.Role;
 
 import javax.persistence.*;
-
+/**
+ * Класс, представляющий сущность пользователя в приложении.
+ * Соответствует таблице "users" в базе данных и используется
+ * для хранения информации о пользователях.
+ */
 @Data
 @Entity
 @Table(name = "users")
@@ -15,13 +19,19 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-
+    @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false)
     private String firstName;
 
+    @Column(nullable = false)
     private String lastName;
 
+    @Column(nullable = false)
     private String phone;
 
     @Enumerated(EnumType.STRING)
@@ -30,5 +40,4 @@ public class User {
     @OneToOne
     @JoinColumn(name = "image_id")
     private Image image;
-
 }

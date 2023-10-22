@@ -3,7 +3,11 @@ package ru.skypro.courseWork.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-
+/**
+ * Класс, представляющий сущность изображений в приложении.
+ * Соответствует таблице "image" в базе данных и используется
+ * для хранения изображений пользователей и объявлений.
+ */
 @Data
 @Entity
 public class Image {
@@ -15,8 +19,4 @@ public class Image {
 
     @Lob
     private byte[] data;
-
-    private String filePath;
-
-    private Long fileSize;
 }
