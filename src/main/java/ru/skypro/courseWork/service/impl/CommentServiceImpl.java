@@ -1,6 +1,7 @@
 package ru.skypro.courseWork.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,13 @@ import ru.skypro.courseWork.service.CommentService;
 import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
+/**
+ * Реализация сервиса по работе с комментариями объявления
+ */
 @Service
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
@@ -37,7 +43,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDto createAdComment(Integer id, CreateOrUpdateCommentDto createOrUpdateCommentDto, Authentication authentication) {
+    public CommentDto createAdComment(Integer id,
+                                      CreateOrUpdateCommentDto createOrUpdateCommentDto,
+                                      Authentication authentication) {
 
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
         Ad ad = adRepository.findById(id).orElseThrow(AdNotFoundException::new);
@@ -47,6 +55,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setAuthor(user);
 
         commentRepository.save(comment);
+        log.debug("Comment with id - {} was created", id);
         return commentMapper.toCommentDto(comment);
     }
 
@@ -55,6 +64,7 @@ public class CommentServiceImpl implements CommentService {
             "@commentServiceImpl.findCommentById(#commentId).getAuthor().getEmail()==authentication.name")
     public void deleteCommentById(Integer commentId) {
         commentRepository.deleteById(commentId);
+        log.debug("Comment with id - {} was deleted", commentId);
     }
 
     @Override
@@ -76,10 +86,21 @@ public class CommentServiceImpl implements CommentService {
         comment.setAd(ad);
         comment.setAuthor(user);
         commentRepository.save(comment);
+
+        log.debug("Comment with id - {} was updated in ad with id - {}", commentId, adId);
         return commentMapper.toCommentDto(comment);
     }
 
     public Comment findCommentById(Integer id) {
-        return commentRepository.findById(id).orElseThrow(CommentNotFoundException::new);
+
+        Optional<Comment> comment = commentRepository.findById(id);
+
+        if (comment.isEmpty()) {
+            log.error("Comment not found");
+            throw new CommentNotFoundException();
+        } else {
+            return comment.get();
+        }
+
     }
 }

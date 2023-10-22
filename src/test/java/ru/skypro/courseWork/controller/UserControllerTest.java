@@ -5,12 +5,12 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class UserControllerTest {
-
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -70,7 +69,7 @@ public class UserControllerTest {
         User user = testUtil.createTestUser();
 
         NewPasswordDto newPasswordDto = new NewPasswordDto();
-        newPasswordDto.setCurrentPassword("password"); //тут текущий пароль незакодированный
+        newPasswordDto.setCurrentPassword("password");
         newPasswordDto.setNewPassword("newPassword");
 
         mockMvc.perform(MockMvcRequestBuilders.post("/users/set_password")
@@ -79,7 +78,9 @@ public class UserControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk());
 
-        assertTrue(passwordEncoder.matches("newPassword", userRepository.findByEmail(user.getEmail()).get().getPassword()));
+        assertTrue(userRepository.findByEmail(user.getEmail()).isPresent());
+        assertTrue(passwordEncoder.matches("newPassword",
+                userRepository.findByEmail(user.getEmail()).get().getPassword()));
     }
 
 
@@ -139,24 +140,17 @@ public class UserControllerTest {
                 "someImage!".getBytes()
         );
 
-        MockMultipartHttpServletRequestBuilder builder =
-                MockMvcRequestBuilders.multipart("/users/me/image");
-
-        builder.with(request -> {
-            request.setMethod("PATCH");
-            return request;
-        });
-
-        mockMvc.perform(builder
+        mockMvc.perform(MockMvcRequestBuilders.multipart(HttpMethod.PATCH, "/users/me/image")
                         .file(image))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk());
 
+        assertTrue(userRepository.findById(user.getId()).isPresent());
         assertArrayEquals(image.getBytes(), userRepository.findById(user.getId()).get().getImage().getData());
     }
 
     @Test
-    @DisplayName("Получение изображения пользователя по его id")
+    @DisplayName("Получение аватара пользователя по его id")
     @WithMockUser
     void shouldReturnArrayOfByteImage_WhenGetImageCalled() throws Exception {
 

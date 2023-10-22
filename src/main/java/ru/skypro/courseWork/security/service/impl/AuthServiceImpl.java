@@ -1,6 +1,7 @@
 package ru.skypro.courseWork.security.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import javax.transaction.Transactional;
  * Реализация сервиса для аутентификации и регистрации пользователей.
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
@@ -31,8 +33,10 @@ public class AuthServiceImpl implements AuthService {
     public boolean login(String username, String password) {
         UserDetails userDetails = securityUserService.loadUserByUsername(username);
         if (userRepository.findByEmail(username).isEmpty() || !encoder.matches(password, userDetails.getPassword())) {
+            log.info("Failed login attempt with username - {}", username);
             throw new InvalidLoginPasswordException();
         }
+        log.debug("User with username - {} was login", username);
         return encoder.matches(password, userDetails.getPassword());
     }
 
@@ -52,6 +56,12 @@ public class AuthServiceImpl implements AuthService {
         }
 
         userRepository.save(user);
+
+        if (registerDto.getRole() == Role.ADMIN) {
+            log.info("New ADMIN was created with username - {}", registerDto.getUsername());
+        } else {
+            log.debug("New USER was created with username - {}", registerDto.getUsername());
+        }
         return true;
     }
 }

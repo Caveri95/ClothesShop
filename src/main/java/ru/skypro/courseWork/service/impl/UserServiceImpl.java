@@ -1,7 +1,7 @@
 package ru.skypro.courseWork.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,8 +16,13 @@ import ru.skypro.courseWork.service.UserService;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.Optional;
 
+/**
+ * Реализация сервиса по работе с пользователями
+ */
 @Service
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -38,6 +43,7 @@ public class UserServiceImpl implements UserService {
         user.setLastName(updateUserDto.getLastName());
         user.setPhone(updateUserDto.getPhone());
         userRepository.save(user);
+        log.debug("Info about user with id - {} was update", user.getId());
         return userMapper.toUpdateUserDto(user);
     }
 
@@ -47,9 +53,17 @@ public class UserServiceImpl implements UserService {
         User user = findUserByEmail(authentication);
         user.setImage(imageService.upload(image));
         userRepository.save(user);
+        log.debug("User avatar with id - {} was update", user.getId());
     }
 
     private User findUserByEmail(Authentication authentication) {
-        return userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
+        Optional<User> user = userRepository.findByEmail(authentication.getName());
+
+        if (user.isEmpty()) {
+            log.error("User not found");
+            throw new UserNotFoundException();
+        } else {
+            return user.get();
+        }
     }
 }

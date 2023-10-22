@@ -1,6 +1,7 @@
 package ru.skypro.courseWork.security.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import javax.transaction.Transactional;
  * Реализация сервиса для обновления пароля пользователя
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class SecurityUtilsImpl implements SecurityUtils {
 
@@ -35,6 +37,9 @@ public class SecurityUtilsImpl implements SecurityUtils {
         if (passwordEncoder.matches(newPasswordDto.getCurrentPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(newPasswordDto.getNewPassword()));
             userRepository.save(user);
+            log.debug("User with id - {} updated password", user.getId());
+        } else {
+            log.info("Incorrect password update");
         }
     }
 }

@@ -1,6 +1,7 @@
 package ru.skypro.courseWork.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -23,8 +24,13 @@ import ru.skypro.courseWork.service.ImageService;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
+/**
+ * Реализация сервиса по работе с объявлениями
+ */
 @Service
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class AdServiceImpl implements AdService {
@@ -36,14 +42,15 @@ public class AdServiceImpl implements AdService {
     private final ImageRepository imageRepository;
     private final CommentRepository commentRepository;
 
-
     @Override
     public List<AdDto> getAllAds() {
         return adMapper.toAdsDto(adRepository.findAll());
     }
 
     @Override
-    public AdDto createAd(CreateOrUpdateAdDto properties, MultipartFile image, Authentication authentication) throws IOException {
+    public AdDto createAd(CreateOrUpdateAdDto properties,
+                          MultipartFile image,
+                          Authentication authentication) throws IOException {
 
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
 
@@ -51,6 +58,7 @@ public class AdServiceImpl implements AdService {
         ad.setImage(imageService.upload(image));
         ad.setAuthor(user);
         adRepository.save(ad);
+        log.debug("Created ad " + ad);
 
         return adMapper.toAdDto(ad);
     }
@@ -63,6 +71,7 @@ public class AdServiceImpl implements AdService {
         imageRepository.delete(ad.getImage());
         ad.setImage(imageService.upload(image));
         adRepository.save(ad);
+        log.debug("Update image ad with id - {}", id);
     }
 
     @Override
@@ -85,8 +94,10 @@ public class AdServiceImpl implements AdService {
         Ad ad = findAdById(id);
 
         commentRepository.deleteAllByAdPk(ad.getPk());
-        imageRepository.deleteById(ad.getImage().getId());
         adRepository.deleteById(id);
+        imageRepository.deleteById(ad.getImage().getId());
+
+        log.debug("ad with id - {} was delete", id);
     }
 
     @Override
@@ -100,10 +111,20 @@ public class AdServiceImpl implements AdService {
         ad.setPrice(createOrUpdateAdDto.getPrice());
         adRepository.save(ad);
 
+        log.debug("ad with id - {} was update", id);
+
         return adMapper.toAdDto(ad);
     }
 
     public Ad findAdById(Integer id) {
-        return adRepository.findById(id).orElseThrow(AdNotFoundException::new);
+
+        Optional<Ad> ad = adRepository.findById(id);
+
+        if (ad.isEmpty()) {
+            log.error("Ad not found");
+            throw new AdNotFoundException();
+        } else {
+            return ad.get();
+        }
     }
 }

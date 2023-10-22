@@ -70,6 +70,7 @@ class RegistrationControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isCreated());
 
+        assertTrue(userRepository.findByEmail(registerDto.getUsername()).isPresent());
         User newUser = userRepository.findByEmail(registerDto.getUsername()).get();
 
         assertEquals(newUser.getEmail(), registerDto.getUsername());

@@ -5,11 +5,11 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -196,7 +196,7 @@ class AdControllerTest {
     }
 
     @Test
-    @DisplayName("Обновление картинки объявления")
+    @DisplayName("Обновление изображения объявления")
     @WithMockUser(value = "test@gmail.com")
     void shouldReturnOk_WhenUpdateImageAdCalled() throws Exception {
 
@@ -210,20 +210,15 @@ class AdControllerTest {
                 "someImage!".getBytes()
         );
 
-        MockMultipartHttpServletRequestBuilder builder =
-                MockMvcRequestBuilders.multipart("/ads/{id}/image", ad.getPk());
-
-        builder.with(request -> {
-            request.setMethod("PATCH"); //потому что если есть мультипартовый запрос, то patch не хочет работать
-            return request;
-        });
-
-        mockMvc.perform(builder
+        mockMvc.perform(MockMvcRequestBuilders.multipart(HttpMethod.PATCH, "/ads/{id}/image", ad.getPk())
                         .file(image))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk());
 
+        assertTrue(adRepository.findById(ad.getPk()).isPresent());
         Ad updateAd = adRepository.findById(ad.getPk()).get();
+
+        assertTrue(imageRepository.findById(updateAd.getImage().getId()).isPresent());
 
         assertArrayEquals(image.getBytes(), imageRepository.findById(updateAd.getImage().getId()).get().getData());
     }

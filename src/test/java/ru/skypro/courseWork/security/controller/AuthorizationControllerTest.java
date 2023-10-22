@@ -37,7 +37,6 @@ class AuthorizationControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private WebApplicationContext context;
-
     @Autowired
     private TestUtil testUtil;
 

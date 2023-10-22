@@ -12,6 +12,9 @@ import ru.skypro.courseWork.repository.AdRepository;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Сервис по работе с объявлениями
+ */
 public interface AdService {
 
     /**

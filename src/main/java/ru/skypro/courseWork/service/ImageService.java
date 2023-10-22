@@ -5,6 +5,9 @@ import ru.skypro.courseWork.entity.Image;
 
 import java.io.IOException;
 
+/**
+ * Сервис по работе с изображениями
+ */
 public interface ImageService {
 
     /**
