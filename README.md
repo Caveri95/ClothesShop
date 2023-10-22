@@ -50,6 +50,17 @@
 - Mapstruct;
 - h2database for tests.
 
+## Демо
+- Регистрация и авторизация пользователя. Изменение своих данных, аватара и пароля
+![ScreenRecorderProject7](https://github.com/Caveri95/ClothesShop/assets/115732440/865a751f-2877-4ecb-ae2f-777fcb1d3495)
+
+- Создание объявления и комментария
+![ScreenRecorderProject14](https://github.com/Caveri95/ClothesShop/assets/115732440/6e70b1f3-c01d-4939-b93f-b4c43aba9db6)
+
+- Редактирование объявления
+![ScreenRecorderProject15](https://github.com/Caveri95/ClothesShop/assets/115732440/11a90886-6575-4fc0-bb97-0f52e3ab22ab)
+
+
 ## Примечание
 - Функционал backend-части приложение разрабатывался под готовую OpenAPI спецификацию https://github.com/skygroundwater/OnlineResellingProject/blob/release/openapi.yaml
 - Приложение функционирует с помощью запросов с localhost:3000 к эндпоинтам на localhost:8080.
