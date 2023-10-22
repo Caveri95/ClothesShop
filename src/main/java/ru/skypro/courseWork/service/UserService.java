@@ -9,6 +9,9 @@ import ru.skypro.courseWork.exception.notFoundException.UserNotFoundException;
 
 import java.io.IOException;
 
+/**
+ * Сервис по работе с пользователями
+ */
 public interface UserService {
 
     /**

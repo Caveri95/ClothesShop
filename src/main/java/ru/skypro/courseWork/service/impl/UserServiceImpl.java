@@ -18,6 +18,9 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.Optional;
 
+/**
+ * Реализация сервиса по работе с пользователями
+ */
 @Service
 @Slf4j
 @Transactional

@@ -75,11 +75,14 @@ class CommentControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.count").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].author").value(comment.getAuthor().getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].authorImage").value("/users/image/" +
-                        comment.getAuthor().getImage().getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].authorFirstName").value("firstName"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].createdAt", Matchers.lessThan(System.currentTimeMillis())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].author")
+                        .value(comment.getAuthor().getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].authorImage")
+                        .value("/users/image/" + comment.getAuthor().getImage().getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].authorFirstName")
+                        .value("firstName"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].createdAt",
+                        Matchers.lessThan(System.currentTimeMillis())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].text").value("TextComment"))
                 .andExpect(status().isOk());
     }
@@ -102,7 +105,8 @@ class CommentControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.authorImage").value("/users/image/"
                         + ad.getAuthor().getImage().getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.authorFirstName").value("firstName"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.createdAt", Matchers.lessThan(System.currentTimeMillis())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.createdAt",
+                        Matchers.lessThan(System.currentTimeMillis())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.text").value("SomeCommentText"))
                 .andExpect(status().isOk());
     }

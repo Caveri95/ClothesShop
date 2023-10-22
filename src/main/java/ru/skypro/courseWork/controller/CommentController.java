@@ -14,10 +14,10 @@ import ru.skypro.courseWork.dto.CommentDto;
 import ru.skypro.courseWork.dto.CommentsDto;
 import ru.skypro.courseWork.dto.CreateOrUpdateCommentDto;
 import ru.skypro.courseWork.service.CommentService;
-import ru.skypro.courseWork.service.ImageService;
 
 import javax.validation.Valid;
 import java.util.List;
+
 /**
  * Класс-контроллер для обработки запросов, связанных с комментариями объявлений.
  */
@@ -41,7 +41,8 @@ public class CommentController {
     @GetMapping("/{id}/comments")
     @Operation(summary = "Получение комментариев объявления", responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = {
-                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = CommentsDto.class)))}),
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema =
+                    @Schema(implementation = CommentsDto.class)))}),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "404", description = "Not found")
     })
@@ -63,7 +64,8 @@ public class CommentController {
     @PostMapping("/{id}/comments")
     @Operation(summary = "Добавление комментария к объявлению", responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = {
-                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = CommentDto.class)))}),
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema =
+                    @Schema(implementation = CommentDto.class)))}),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "404", description = "Not found")
     })
@@ -111,7 +113,8 @@ public class CommentController {
     @PatchMapping("/{adId}/comments/{commentId}")
     @Operation(summary = "Обновление комментария", responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = {
-                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = CommentDto.class)))}),
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema =
+                    @Schema(implementation = CommentDto.class)))}),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Not found")

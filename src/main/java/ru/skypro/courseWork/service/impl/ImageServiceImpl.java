@@ -11,6 +11,9 @@ import ru.skypro.courseWork.service.ImageService;
 
 import java.io.IOException;
 
+/**
+ * Реализация сервиса по работе с изображениями
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor

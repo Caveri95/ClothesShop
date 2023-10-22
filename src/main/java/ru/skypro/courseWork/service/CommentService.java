@@ -11,6 +11,9 @@ import ru.skypro.courseWork.repository.CommentRepository;
 
 import java.util.List;
 
+/**
+ * Сервис по работе с комментариями
+ */
 public interface CommentService {
 
     /**

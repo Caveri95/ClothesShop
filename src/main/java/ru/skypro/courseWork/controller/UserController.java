@@ -65,7 +65,8 @@ public class UserController {
     @GetMapping("/me")
     @Operation(summary = "Получение информации об авторизованном пользователе", responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = {
-                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = UserDto.class)))}),
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema =
+                    @Schema(implementation = UserDto.class)))}),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     public ResponseEntity<UserDto> getUser(Authentication authentication) {
@@ -83,7 +84,8 @@ public class UserController {
     @PatchMapping("/me")
     @Operation(summary = "Обновление информации об авторизованном пользователе", responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = {
-                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = UpdateUserDto.class)))}),
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema =
+                    @Schema(implementation = UpdateUserDto.class)))}),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     public ResponseEntity<UpdateUserDto> updateUser(@RequestBody @Valid UpdateUserDto updateUserDto,
@@ -104,7 +106,8 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<Void> updateUserAvatar(@RequestParam MultipartFile image, Authentication authentication) throws IOException {
+    public ResponseEntity<Void> updateUserAvatar(@RequestParam MultipartFile image,
+                                                 Authentication authentication) throws IOException {
         userService.updateAvatar(image, authentication);
         return ResponseEntity.ok().build();
     }

@@ -32,7 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class UserControllerTest {
 
-
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
@@ -70,7 +69,7 @@ public class UserControllerTest {
         User user = testUtil.createTestUser();
 
         NewPasswordDto newPasswordDto = new NewPasswordDto();
-        newPasswordDto.setCurrentPassword("password"); //тут текущий пароль незакодированный
+        newPasswordDto.setCurrentPassword("password");
         newPasswordDto.setNewPassword("newPassword");
 
         mockMvc.perform(MockMvcRequestBuilders.post("/users/set_password")
@@ -80,7 +79,8 @@ public class UserControllerTest {
                 .andExpect(status().isOk());
 
         assertTrue(userRepository.findByEmail(user.getEmail()).isPresent());
-        assertTrue(passwordEncoder.matches("newPassword", userRepository.findByEmail(user.getEmail()).get().getPassword()));
+        assertTrue(passwordEncoder.matches("newPassword",
+                userRepository.findByEmail(user.getEmail()).get().getPassword()));
     }
 
 
@@ -150,7 +150,7 @@ public class UserControllerTest {
     }
 
     @Test
-    @DisplayName("Получение изображения пользователя по его id")
+    @DisplayName("Получение аватара пользователя по его id")
     @WithMockUser
     void shouldReturnArrayOfByteImage_WhenGetImageCalled() throws Exception {
 

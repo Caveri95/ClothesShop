@@ -1,6 +1,5 @@
 package ru.skypro.courseWork.dto;
 
-import lombok.Data;
 /**
  * Перечисление, представляющее возможные роли для пользователей.
  */

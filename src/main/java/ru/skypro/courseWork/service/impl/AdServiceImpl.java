@@ -26,6 +26,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Реализация сервиса по работе с объявлениями
+ */
 @Service
 @Slf4j
 @Transactional
@@ -45,7 +48,9 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
-    public AdDto createAd(CreateOrUpdateAdDto properties, MultipartFile image, Authentication authentication) throws IOException {
+    public AdDto createAd(CreateOrUpdateAdDto properties,
+                          MultipartFile image,
+                          Authentication authentication) throws IOException {
 
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
 

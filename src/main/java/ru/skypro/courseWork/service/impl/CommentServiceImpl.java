@@ -24,6 +24,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Реализация сервиса по работе с комментариями объявления
+ */
 @Service
 @Slf4j
 @Transactional
@@ -40,7 +43,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDto createAdComment(Integer id, CreateOrUpdateCommentDto createOrUpdateCommentDto, Authentication authentication) {
+    public CommentDto createAdComment(Integer id,
+                                      CreateOrUpdateCommentDto createOrUpdateCommentDto,
+                                      Authentication authentication) {
 
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
         Ad ad = adRepository.findById(id).orElseThrow(AdNotFoundException::new);

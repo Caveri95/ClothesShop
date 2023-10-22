@@ -196,7 +196,7 @@ class AdControllerTest {
     }
 
     @Test
-    @DisplayName("Обновление картинки объявления")
+    @DisplayName("Обновление изображения объявления")
     @WithMockUser(value = "test@gmail.com")
     void shouldReturnOk_WhenUpdateImageAdCalled() throws Exception {
 
