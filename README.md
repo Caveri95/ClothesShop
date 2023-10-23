@@ -20,7 +20,8 @@
 - редактирование всех объявлений.
 
 ## Связь между сущностями в таблицах:
-![image](https://github.com/Caveri95/ClothesShop/assets/115732440/e825fee3-f4d2-47fe-bc28-0da079ac733b)
+![image](https://github.com/Caveri95/ClothesShop/assets/115732440/6bc34c73-e924-4c24-a3a6-2537ba4cecb1)
+
 
 
 
