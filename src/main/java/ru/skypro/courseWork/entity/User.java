@@ -1,15 +1,20 @@
 package ru.skypro.courseWork.entity;
 
-import lombok.Data;
+import lombok.*;
 import ru.skypro.courseWork.dto.Role;
 
 import javax.persistence.*;
+import java.util.Objects;
+
 /**
  * Класс, представляющий сущность пользователя в приложении.
  * Соответствует таблице "users" в базе данных и используется
  * для хранения информации о пользователях.
  */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -38,6 +43,20 @@ public class User {
     private Role role;
 
     @OneToOne
+    @ToString.Exclude
     @JoinColumn(name = "image_id")
     private Image image;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

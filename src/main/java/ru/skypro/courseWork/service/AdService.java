@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.courseWork.dto.AdDto;
+import ru.skypro.courseWork.dto.AdsDto;
 import ru.skypro.courseWork.dto.CreateOrUpdateAdDto;
 import ru.skypro.courseWork.dto.ExtendedAdDto;
 import ru.skypro.courseWork.exception.notFoundException.AdNotFoundException;
@@ -20,10 +21,10 @@ public interface AdService {
     /**
      * Получение всех объявлений из базы данных.
      *
-     * @return список объектов класса {@link AdDto}
+     * @return объект, содержащий в себе список объектов класса {@link AdDto} и количество таких объектов
      * @see JpaRepository#findAll()
      */
-    List<AdDto> getAllAds();
+    AdsDto getAllAds();
 
     /**
      * Создание нового объявления и сохранение его в базу данных.

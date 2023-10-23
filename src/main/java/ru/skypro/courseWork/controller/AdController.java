@@ -46,9 +46,7 @@ public class AdController {
                     @Schema(implementation = AdsDto.class)))})
     })
     public ResponseEntity<AdsDto> getAllAds() {
-        List<AdDto> adsDto = adService.getAllAds();
-
-        return ResponseEntity.ok(new AdsDto(adsDto.size(), adsDto));
+        return ResponseEntity.ok(adService.getAllAds());
     }
 
     /**

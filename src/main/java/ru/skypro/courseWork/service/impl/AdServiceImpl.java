@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.courseWork.dto.AdDto;
+import ru.skypro.courseWork.dto.AdsDto;
 import ru.skypro.courseWork.dto.CreateOrUpdateAdDto;
 import ru.skypro.courseWork.dto.ExtendedAdDto;
 import ru.skypro.courseWork.entity.Ad;
@@ -43,8 +44,9 @@ public class AdServiceImpl implements AdService {
     private final CommentRepository commentRepository;
 
     @Override
-    public List<AdDto> getAllAds() {
-        return adMapper.toAdsDto(adRepository.findAll());
+    public AdsDto getAllAds() {
+        List<AdDto> adDto = adMapper.toAdsDto(adRepository.findAll());
+        return new AdsDto(adDto.size(), adDto);
     }
 
     @Override
