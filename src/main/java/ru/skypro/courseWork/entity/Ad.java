@@ -3,7 +3,6 @@ package ru.skypro.courseWork.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 /**
  * Класс, представляющий сущность объявления в приложении.
@@ -13,6 +12,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode(of = {"pk"})
 @RequiredArgsConstructor
 @Entity
 public class Ad {
@@ -39,17 +39,4 @@ public class Ad {
 
     @Column(nullable = false)
     private String title;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Ad ad = (Ad) o;
-        return Objects.equals(pk, ad.pk);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(pk);
-    }
 }
