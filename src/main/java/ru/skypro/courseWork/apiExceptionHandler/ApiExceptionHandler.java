@@ -1,4 +1,4 @@
-package ru.skypro.courseWork.controller;
+package ru.skypro.courseWork.apiExceptionHandler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;

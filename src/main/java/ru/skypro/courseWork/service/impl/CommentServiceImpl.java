@@ -98,6 +98,7 @@ public class CommentServiceImpl implements CommentService {
         if (comment.isEmpty()) {
             log.error("Comment not found");
             throw new CommentNotFoundException();
+
         } else {
             return comment.get();
         }

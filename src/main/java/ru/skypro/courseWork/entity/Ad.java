@@ -1,14 +1,19 @@
 package ru.skypro.courseWork.entity;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
+
 /**
  * Класс, представляющий сущность объявления в приложении.
  * Соответствует таблице "ad" в базе данных и используется
  * для хранения информации об объявлениях пользователей.
  */
-@Data
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(of = {"pk"})
+@RequiredArgsConstructor
 @Entity
 public class Ad {
 
@@ -22,6 +27,7 @@ public class Ad {
     private User author;
 
     @OneToOne
+    @ToString.Exclude
     @JoinColumn(name = "image_id")
     private Image image;
 
